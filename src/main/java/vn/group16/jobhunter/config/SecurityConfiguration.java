@@ -1,4 +1,4 @@
-package vn.hoidanit.jobhunter.config;
+package vn.group16.jobhunter.config;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -25,7 +25,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.util.Base64;
 
-import vn.hoidanit.jobhunter.util.SecurityUtil;
+import vn.group16.jobhunter.util.SecurityUtil;
 
 @Configuration
 @EnableMethodSecurity(securedEnabled = true)

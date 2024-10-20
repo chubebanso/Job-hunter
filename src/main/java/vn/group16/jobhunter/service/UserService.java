@@ -1,4 +1,4 @@
-package vn.hoidanit.jobhunter.service;
+package vn.group16.jobhunter.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import vn.hoidanit.jobhunter.domain.User;
-import vn.hoidanit.jobhunter.repository.UserRepository;
+import vn.group16.jobhunter.domain.User;
+import vn.group16.jobhunter.repository.UserRepository;
 
 @Service
 public class UserService {

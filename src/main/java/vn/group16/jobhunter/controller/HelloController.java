@@ -1,10 +1,10 @@
-package vn.hoidanit.jobhunter.controller;
+package vn.group16.jobhunter.controller;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import vn.hoidanit.jobhunter.util.error.IdInvalidException;
+import vn.group16.jobhunter.util.error.IdInvalidException;
 
 @RestController
 public class HelloController {

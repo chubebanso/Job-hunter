@@ -1,4 +1,4 @@
-package vn.hoidanit.jobhunter.config;
+package vn.group16.jobhunter.config;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import vn.hoidanit.jobhunter.domain.RestResponse;
+import vn.group16.jobhunter.domain.RestResponse;
 
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
