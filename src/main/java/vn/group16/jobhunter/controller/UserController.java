@@ -2,12 +2,16 @@ package vn.group16.jobhunter.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import vn.group16.jobhunter.domain.ResultPaginationDTO;
 import vn.group16.jobhunter.domain.User;
 import vn.group16.jobhunter.service.UserService;
 import vn.group16.jobhunter.util.error.IdInvalidException;
 
 import java.util.List;
 
+import com.turkraft.springfilter.boot.Filter;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,8 +57,9 @@ public class UserController {
     }
 
     @GetMapping("/users/all")
-    public ResponseEntity<List<User>> getAllUser() {
-        return ResponseEntity.status(HttpStatus.OK).body(this.userService.getAllUser());
+    public ResponseEntity<ResultPaginationDTO> getAllUser(Pageable pageable,
+            @Filter Specification<User> spec) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.userService.getAllUser(spec, pageable));
     }
 
     @PutMapping("/users/update")
