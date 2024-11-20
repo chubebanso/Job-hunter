@@ -6,13 +6,11 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import vn.group16.jobhunter.domain.Company;
 import vn.group16.jobhunter.domain.Meta;
 import vn.group16.jobhunter.domain.ResultPaginationDTO;
-import vn.group16.jobhunter.domain.User;
 import vn.group16.jobhunter.repository.CompanyRepository;
 
 @Service

@@ -7,21 +7,28 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import vn.group16.jobhunter.domain.User;
 import vn.group16.jobhunter.dto.LoginDTO;
 import vn.group16.jobhunter.dto.ResLoginDTO;
+import vn.group16.jobhunter.service.UserService;
 import vn.group16.jobhunter.util.SecurityUtil;
 
 @RestController
+@RequestMapping("/api/v1")
 public class AuthController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final SecurityUtil securityUtil;
+    private final UserService userService;
 
-    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, SecurityUtil securityUtil) {
+    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, SecurityUtil securityUtil,
+            UserService userService) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.securityUtil = securityUtil;
+        this.userService = userService;
     }
 
     @PostMapping("/login")
@@ -38,6 +45,12 @@ public class AuthController {
         String access_token = this.securityUtil.createToken(authentication);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         ResLoginDTO res = new ResLoginDTO();
+        User currentUser = this.userService.getUserByUserName(loginDto.getUsername());
+        if (currentUser != null) {
+            ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(currentUser.getId(), currentUser.getEmail(),
+                    currentUser.getName());
+            res.setUserLogin(userLogin);
+        }
         res.setAccessToken(access_token);
         return ResponseEntity.ok().body(res);
     }
