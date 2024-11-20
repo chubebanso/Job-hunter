@@ -28,6 +28,14 @@ public class CompanyService {
 
     }
 
+    public Company getCompanyById(long id) {
+        Optional<Company> companyOptional = this.companyRepository.findById(id);
+        if (companyOptional.isPresent()) {
+            return companyOptional.get();
+        }
+        return null;
+    }
+
     public List<Company> getAllCompanies() {
         return this.companyRepository.findAll();
     }
