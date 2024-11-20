@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.print.DocFlavor.STRING;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -11,8 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.turkraft.springfilter.boot.Filter;
+
 import jakarta.validation.Valid;
 import vn.group16.jobhunter.domain.Company;
+import vn.group16.jobhunter.domain.ResultPaginationDTO;
+import vn.group16.jobhunter.domain.User;
 import vn.group16.jobhunter.service.CompanyService;
 import vn.group16.jobhunter.util.annotation.APIMessage;
 
@@ -36,11 +42,16 @@ public class CompanyController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newCompany);
     }
 
+    
+    // public ResponseEntity<List<Company>> getAllCompanies() {
+    //     List<Company> companies = this.companyService.getAllCompanies();
+    //     return ResponseEntity.ok(companies);
+    // }
     @GetMapping("/companies")
     @APIMessage("fetch companies")
-    public ResponseEntity<List<Company>> getAllCompanies() {
-        List<Company> companies = this.companyService.getAllCompanies();
-        return ResponseEntity.ok(companies);
+    public ResponseEntity<ResultPaginationDTO> getAllCompanies(Pageable pageable,
+            @Filter Specification<Company> spec) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.companyService.getAllCompaniesPageResultPaginationDTO(spec, pageable));
     }
 
     @PutMapping("/update/company")
