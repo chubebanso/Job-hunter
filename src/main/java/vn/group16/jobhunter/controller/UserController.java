@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.group16.jobhunter.domain.ResultPaginationDTO;
 import vn.group16.jobhunter.domain.User;
 import vn.group16.jobhunter.service.UserService;
+import vn.group16.jobhunter.util.annotation.APIMessage;
 import vn.group16.jobhunter.util.error.IdInvalidException;
 
 import java.util.List;
@@ -20,9 +21,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
+@RequestMapping("/api/v1")
 public class UserController {
     final private UserService userService;
     final private PasswordEncoder passwordEncoder;
@@ -57,6 +60,7 @@ public class UserController {
     }
 
     @GetMapping("/users/all")
+    @APIMessage("get all user")
     public ResponseEntity<ResultPaginationDTO> getAllUser(Pageable pageable,
             @Filter Specification<User> spec) {
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.getAllUser(spec, pageable));

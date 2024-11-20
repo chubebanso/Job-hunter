@@ -1,10 +1,15 @@
 package vn.group16.jobhunter.domain;
 
+import java.time.Instant;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import vn.group16.jobhunter.constant.GenderEnum;
 
 @Entity
 @Table(name = "user")
@@ -15,6 +20,53 @@ public class User {
     private String name;
     private String email;
     private String password;
+    private GenderEnum gender;
+    private Instant createdAt;
+    private Instant updateAt;
+    private long age;
+    private String refreshToken;
+
+    @Enumerated(EnumType.STRING)
+
+    public GenderEnum getGender() {
+        return gender;
+    }
+
+    public void setGender(GenderEnum gender) {
+        this.gender = gender;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getUpdateAt() {
+        return updateAt;
+    }
+
+    public void setUpdateAt(Instant updateAt) {
+        this.updateAt = updateAt;
+    }
+
+    public long getAge() {
+        return age;
+    }
+
+    public void setAge(long age) {
+        this.age = age;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 
     public long getId() {
         return id;
