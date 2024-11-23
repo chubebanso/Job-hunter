@@ -18,7 +18,6 @@ import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import vn.group16.jobhunter.domain.Company;
 import vn.group16.jobhunter.domain.ResultPaginationDTO;
-import vn.group16.jobhunter.domain.User;
 import vn.group16.jobhunter.service.CompanyService;
 import vn.group16.jobhunter.util.annotation.APIMessage;
 

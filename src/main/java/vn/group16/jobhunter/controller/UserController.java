@@ -6,9 +6,11 @@ import vn.group16.jobhunter.domain.ResultPaginationDTO;
 import vn.group16.jobhunter.domain.User;
 import vn.group16.jobhunter.service.UserService;
 import vn.group16.jobhunter.util.annotation.APIMessage;
+import vn.group16.jobhunter.util.error.EmailInvalidException;
 import vn.group16.jobhunter.util.error.IdInvalidException;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.turkraft.springfilter.boot.Filter;
 import org.springframework.data.domain.Pageable;
@@ -36,9 +38,12 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<User> createUser(@RequestBody User postmanUser) {
+    public ResponseEntity<User> createUser(@RequestBody User postmanUser) throws EmailInvalidException {
         String hashPassword = this.passwordEncoder.encode(postmanUser.getPassword());
         postmanUser.setPassword(hashPassword);
+        if(this.userService.getUserByUserName(postmanUser.getEmail())!=null){
+            throw new EmailInvalidException("Email bi trung.");
+        }
         User user = this.userService.handleCreateUser(postmanUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
