@@ -33,6 +33,17 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(restResponse);
     }
 
+    @ExceptionHandler(value = {
+            EmailInvalidException.class
+    })
+    public ResponseEntity<RestResponse<Object>> handleEmailException(Exception ex) {
+        RestResponse<Object> restResponse = new RestResponse<Object>();
+        restResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        restResponse.setErrCode(ex.getMessage());
+        restResponse.setMessage("Exception occurs...");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(restResponse);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<RestResponse<Object>> errorValidation(MethodArgumentNotValidException ex) {
         BindingResult result = ex.getBindingResult();
