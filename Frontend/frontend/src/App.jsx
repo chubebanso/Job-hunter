@@ -1,13 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Navbar from './components/shared/Navbar'
+  import Navbar from './components/shared/Navbar'
+  import { createBrowserRouter } from 'react-router-dom'
+
+  const appRouter= createBrowserRouter([
+    {
+      path:'/',
+      element:<Home/>
+    },
+    {
+      path:'/login',
+      element:<Login/>
+    },
+    {
+      path:'/signup',
+      element:<Signup/>
+    },
+    {
+      path:'/',
+      element:<Home/>
+    },
+    {
+      path:'/',
+      element:<Home/>
+    },
+    {
+      path:'/',
+      element:<Home/>
+    },
+  ])
 
 function App() {
   return(
     <>
-    <h1 className='text-red-500'>Lets build Job Portal</h1>
     <Navbar/>
     </>
   )
