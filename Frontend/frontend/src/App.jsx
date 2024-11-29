@@ -1,5 +1,8 @@
   import Navbar from './components/shared/Navbar'
-  import { createBrowserRouter } from 'react-router-dom'
+  import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+  import Login from './components/auth/Login'
+  import Signup from './components/auth/Signup'
+  import Home from './components/Home'
 
   const appRouter= createBrowserRouter([
     {
@@ -14,25 +17,14 @@
       path:'/signup',
       element:<Signup/>
     },
-    {
-      path:'/',
-      element:<Home/>
-    },
-    {
-      path:'/',
-      element:<Home/>
-    },
-    {
-      path:'/',
-      element:<Home/>
-    },
+    
   ])
 
 function App() {
   return(
-    <>
-    <Navbar/>
-    </>
+    <div>
+    <RouterProvider router ={appRouter}/>
+    </div>
   )
 }
 
