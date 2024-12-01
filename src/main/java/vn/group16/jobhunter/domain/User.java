@@ -2,6 +2,7 @@ package vn.group16.jobhunter.domain;
 
 import java.time.Instant;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -24,6 +25,7 @@ public class User {
     private Instant createdAt;
     private Instant updateAt;
     private long age;
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String refreshToken;
 
     @Enumerated(EnumType.STRING)
