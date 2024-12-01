@@ -39,6 +39,10 @@ public class ResLoginDTO {
             this.name = name;
         }
 
+        public UserLogin() {
+
+        }
+
     }
 
     public String getAccessToken() {
