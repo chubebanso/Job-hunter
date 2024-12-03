@@ -7,7 +7,7 @@ import { Button } from '../ui/button'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast, Toaster } from 'sonner'
 import { useDispatch, useSelector } from 'react-redux'
-import { setLoading } from '@/redux/authSlice'
+import { setLoading, setUser } from '@/redux/authSlice'
 import { Loader2 } from 'lucide-react'
 
 const Login = () => {
@@ -20,7 +20,7 @@ const Login = () => {
     role: "",
     file: "",
   });
-  const {loading} = useSelector(store=> store.auth);
+  const { loading,user } = useSelector(store => store.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -39,6 +39,7 @@ const Login = () => {
         withCredentials: true,
       });
       if (res.data.success) {
+        dispatch(setUser(res.data.user));
         navigate("/");
         toast.success(res.data.message);
       }
