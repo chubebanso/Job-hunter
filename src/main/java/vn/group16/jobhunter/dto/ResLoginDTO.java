@@ -1,5 +1,7 @@
 package vn.group16.jobhunter.dto;
 
+import vn.group16.jobhunter.domain.Role;
+
 public class ResLoginDTO {
     private String accessToken;
     private UserLogin userLogin;
@@ -8,6 +10,7 @@ public class ResLoginDTO {
         private long id;
         private String email;
         private String name;
+        private Role role;
 
         public long getId() {
             return id;
@@ -33,6 +36,13 @@ public class ResLoginDTO {
             this.name = name;
         }
 
+        public UserLogin(long id, String email, String name, Role role) {
+            this.id = id;
+            this.email = email;
+            this.name = name;
+            this.role = role;
+        }
+
         public UserLogin(long id, String email, String name) {
             this.id = id;
             this.email = email;
@@ -41,6 +51,14 @@ public class ResLoginDTO {
 
         public UserLogin() {
 
+        }
+
+        public Role getRole() {
+            return role;
+        }
+
+        public void setRole(Role role) {
+            this.role = role;
         }
 
     }

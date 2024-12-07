@@ -2,13 +2,22 @@ package vn.group16.jobhunter.domain;
 
 import java.time.Instant;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import vn.group16.jobhunter.constant.GenderEnum;
 
@@ -27,9 +36,12 @@ public class User {
     private long age;
     @Column(columnDefinition = "MEDIUMTEXT")
     private String refreshToken;
+    // @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    // @JoinColumn(name = "role_id")
+    // // @JsonProperty("role")
+    // private Role role;
 
     @Enumerated(EnumType.STRING)
-
     public GenderEnum getGender() {
         return gender;
     }
@@ -101,4 +113,13 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    // public Role getRole() {
+    // return role;
+    // }
+
+    // public void setRole(Role role) {
+    // this.role = role;
+    // }
+
 }

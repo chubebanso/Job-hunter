@@ -49,7 +49,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/", "/api/v1/login", "/api/v1/auth/refresh",
                                         "/api/v1/auth/logout")
                                 .permitAll()
-                                .anyRequest().authenticated())
+                                .anyRequest().permitAll())
                 .oauth2ResourceServer(
                         (oauth2) -> oauth2.jwt(Customizer.withDefaults())
                                 .authenticationEntryPoint(cAuthenticationEntryPoint))
