@@ -3,17 +3,17 @@ package vn.group16.jobhunter.dto;
 import jakarta.validation.constraints.NotBlank;
 
 public class LoginDTO {
-    @NotBlank(message = "username không được để trống")
-    private String username;
+    @NotBlank(message = "Email không được để trống")
+    private String email;
     @NotBlank(message = "Mat khau khong duoc de trong ")
     private String password;
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
