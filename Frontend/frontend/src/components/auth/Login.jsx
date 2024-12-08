@@ -18,7 +18,7 @@ const Login = () => {
         password: "",
     });
     const { loading, user } = useSelector(store => store.auth);
-    const navigate = useNavigate();
+    let navigate = useNavigate();
     const dispatch = useDispatch();
 
     const changeEventHandler = (e) => {
@@ -27,15 +27,20 @@ const Login = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
+        const data = {  // Create the data object to send
+            username: input.email,
+            password: input.password,
+        };
         try {
             dispatch(setLoading(true));
-            const res = await axios.post(`${AUTH_API_END_POINT}/login`, input, {
+            console.log(data);
+            const res = await axios.post(`${AUTH_API_END_POINT}/login`, data, {
                 headers: {
                     "Content-Type": "application/json"
                 },
                 withCredentials: true,
             });
-            if (res.data.success) {
+            if (res.status==200) { 
                 dispatch(setUser(res.data.user));
                 navigate("/");
                 toast.success(res.data.message);

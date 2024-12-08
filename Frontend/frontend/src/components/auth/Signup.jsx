@@ -16,9 +16,7 @@ const Signup = () => {
     const [input, setInput] = useState({
         name: "",
         email: "",
-        phoneNumber: "",
         password: "",
-        roleName: "",
         age: "",
         gender: "",
     });
@@ -37,9 +35,7 @@ const Signup = () => {
         const data = {
             name: input.name,
             email: input.email,
-            phoneNumber: input.phoneNumber,
             password: input.password,
-            roleName: input.roleName,
             age: input.age,
             gender: input.gender,
         };
@@ -55,7 +51,7 @@ const Signup = () => {
             });
 
             // Kiểm tra kết quả trả về từ API
-            if (res.data.success) {
+            if (res.status==201) {
                 toast.success(res.data.message);
                 navigate("/Login");
             } else {
@@ -88,7 +84,7 @@ const Signup = () => {
                             value={input.name}
                             name="name"
                             onChange={changeEventHandler}
-                            placeholder="John Doe"
+                            placeholder="Nguyễn Văn A"
                         />
                     </div>
                     <div className='my-2'>
@@ -98,17 +94,7 @@ const Signup = () => {
                             value={input.email}
                             name="email"
                             onChange={changeEventHandler}
-                            placeholder="john.doe@example.com"
-                        />
-                    </div>
-                    <div className='my-2'>
-                        <Label>Phone Number</Label>
-                        <Input
-                            type="text"
-                            value={input.phoneNumber}
-                            name="phoneNumber"
-                            onChange={changeEventHandler}
-                            placeholder="8080808080"
+                            placeholder="abc@gmail.com"
                         />
                     </div>
                     <div className='my-2'>
