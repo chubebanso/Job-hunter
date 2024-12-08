@@ -42,7 +42,7 @@ public class UserController {
     public ResponseEntity<User> createUser(@RequestBody CreateUserDTO postmanUser) throws EmailInvalidException {
         String hashPassword = this.passwordEncoder.encode(postmanUser.getPassword());
         postmanUser.setPassword(hashPassword);
-        if (this.userService.getUserByUserName(postmanUser.getEmail()) != null) {
+        if (this.userService.getUserByEmail(postmanUser.getEmail()) != null) {
             throw new EmailInvalidException("Email bi trung.");
         }
         User user = this.userService.handleCreateUser(postmanUser);

@@ -3,6 +3,8 @@ package vn.group16.jobhunter.domain;
 import java.time.Instant;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import vn.group16.jobhunter.util.SecurityUtil;
 
 import jakarta.persistence.Column;
@@ -42,6 +44,7 @@ public class Company {
     private String updateBy;
 
     // One-to-many relationship with Job
+    @JsonIgnore
     @OneToMany(mappedBy = "company")
     private List<Job> jobs;
 
