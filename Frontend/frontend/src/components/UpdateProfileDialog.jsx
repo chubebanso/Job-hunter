@@ -15,9 +15,8 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     const { user } = useSelector(store => store.auth);
 
     const [input, setInput] = useState({
-        fullname: user?.fullname || "",
+        name: user?.name || "",
         email: user?.email || "",
-        phoneNumber: user?.phoneNumber || "",
         bio: user?.profile?.bio || "",
         skills: user?.profile?.skills?.map(skill => skill) || "",
         file: user?.profile?.resume || ""
@@ -35,23 +34,32 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
-        const formData = new FormData();
-        formData.append("fullname", input.fullname);
-        formData.append("email", input.email);
-        formData.append("phoneNumber", input.phoneNumber);
-        formData.append("bio", input.bio);
-        formData.append("skills", input.skills);
+    
+        // Chuyển đổi dữ liệu từ input sang đối tượng JSON
+        const jsonData = {
+            fullname: input.fullname,
+            email: input.email,
+            phoneNumber: input.phoneNumber,
+            bio: input.bio,
+            skills: input.skills,
+        };
+    
         if (input.file) {
-            formData.append("file", input.file);
+            // Nếu có file, chúng ta sẽ gửi nó dưới dạng một tệp riêng biệt, không phải trong JSON
+            jsonData.file = input.file;
         }
+    
         try {
             setLoading(true);
-            const res = await axios.post(`${USER_API_END_POINT}/profile/update`, formData, {
+    
+            // Gửi yêu cầu POST với JSON thay vì FormData
+            const res = await axios.post(`${USER_API_END_POINT}/users/update`, jsonData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'application/json', // Cập nhật header thành 'application/json'
                 },
-                withCredentials: true
+                withCredentials: true,
             });
+    
             if (res.data.success) {
                 dispatch(setUser(res.data.user));
                 toast.success(res.data.message);
@@ -59,15 +67,14 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.message);
-        } finally{
+        } finally {
             setLoading(false);
         }
+    
         setOpen(false);
-        console.log(input);
+        console.log(jsonData); // Kiểm tra dữ liệu JSON trong console
     }
-
-
-
+    
     return (
         <div>
             <Dialog open={open}>
@@ -95,16 +102,6 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                     name="email"
                                     type="email"
                                     value={input.email}
-                                    onChange={changeEventHandler}
-                                    className="col-span-3"
-                                />
-                            </div>
-                            <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor="number" className="text-right">Number</Label>
-                                <Input
-                                    id="number"
-                                    name="number"
-                                    value={input.phoneNumber}
                                     onChange={changeEventHandler}
                                     className="col-span-3"
                                 />
