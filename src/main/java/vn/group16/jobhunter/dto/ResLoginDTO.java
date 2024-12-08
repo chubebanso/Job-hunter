@@ -1,8 +1,11 @@
 package vn.group16.jobhunter.dto;
 
+import vn.group16.jobhunter.domain.Role;
+
 public class ResLoginDTO {
     private String accessToken;
     private UserLogin userLogin;
+    Role role;
 
     public static class UserLogin {
         private long id;
@@ -59,6 +62,14 @@ public class ResLoginDTO {
 
     public void setUserLogin(UserLogin userLogin) {
         this.userLogin = userLogin;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
 }

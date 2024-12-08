@@ -10,7 +10,6 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import com.nimbusds.jose.util.Base64;
 
-import jakarta.validation.constraints.Email;
 import vn.group16.jobhunter.dto.ResLoginDTO;
 
 import org.springframework.security.core.context.SecurityContext;
@@ -49,22 +47,29 @@ public class SecurityUtil {
         Instant now = Instant.now();
         Instant validity = now.plus(this.jwtExpiration, ChronoUnit.SECONDS);
 
-        // @formatter:off
-        JwtClaimsSet claims = JwtClaimsSet.builder()
-            .issuedAt(now)
-            .expiresAt(validity)
-            .subject(email)
-            .claim("user", dto)
-            .build();
+        // Chuyển Instant thành chuỗi trước khi thêm vào claim
+        String issuedAt = now.toString(); // Chuyển Instant thành chuỗi ISO
+        String expirationTime = validity.toString(); // Chuyển Instant thành chuỗi ISO
 
-        JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
-        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
-    }
-    public static Optional<String> getCurrentUserLogin() {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));
-    }
-    
+    // @formatter:off
+    JwtClaimsSet claims = JwtClaimsSet.builder()
+        .issuedAt(now)  // Không cần chuyển đổi, vì JwtClaimsSet sẽ tự xử lý
+        .expiresAt(validity)  // Không cần chuyển đổi, JwtClaimsSet tự xử lý
+        .subject(email)
+        .claim("user", dto)  // Đưa user thông tin vào claim
+        .claim("issuedAt", issuedAt)  // Thêm thời gian issuedAt dưới dạng chuỗi
+        .claim("expirationTime", expirationTime)  // Thêm thời gian hết hạn dưới dạng chuỗi
+        .build();
+
+    JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
+    return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+}
+
+        public static Optional<String> getCurrentUserLogin() {
+            SecurityContext securityContext = SecurityContextHolder.getContext();
+            return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));
+        }
+        
   public String createRefreshToken(String email,ResLoginDTO res) {
 
         Instant now = Instant.now();

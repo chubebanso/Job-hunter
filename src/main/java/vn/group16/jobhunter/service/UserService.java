@@ -11,19 +11,35 @@ import org.springframework.stereotype.Service;
 
 import vn.group16.jobhunter.domain.Meta;
 import vn.group16.jobhunter.domain.ResultPaginationDTO;
+import vn.group16.jobhunter.domain.Role;
 import vn.group16.jobhunter.domain.User;
+import vn.group16.jobhunter.dto.CreateUserDTO;
+import vn.group16.jobhunter.repository.RoleRepository;
 import vn.group16.jobhunter.repository.UserRepository;
 
 @Service
 public class UserService {
     final private UserRepository userRepository;
+    final private RoleRepository roleRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
-    public User handleCreateUser(User user) {
-        return this.userRepository.save(user);
+    public User handleCreateUser(CreateUserDTO postmanUser) {
+        Role userRole = this.roleRepository.findByName(postmanUser.getRoleName());
+        if (userRole != null) {
+            User user = new User();
+            user.setName(postmanUser.getName());
+            user.setEmail(postmanUser.getEmail());
+            user.setAge(postmanUser.getAge());
+            user.setGender(postmanUser.getGender());
+            user.setPassword(postmanUser.getPassword());
+            user.setRole(userRole);
+            return this.userRepository.save(user);
+        }
+        return null;
     }
 
     public void handleDeteteUser(long id) {
@@ -78,4 +94,5 @@ public class UserService {
     public User getUserByRefreshTokenAndEmail(String email, String token) {
         return this.userRepository.findByEmailAndRefreshToken(email, token);
     }
+
 }

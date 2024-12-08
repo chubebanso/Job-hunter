@@ -1,6 +1,5 @@
 package vn.group16.jobhunter.domain;
 
-import java.time.Instant;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -30,16 +30,20 @@ public class Role {
     private String name;
     private String description;
     private boolean isActive;
-    private Instant createdAt;
-    private Instant updatedAt;
+    // private Instant createdAt;
+    // private Instant updatedAt;
     private String createdBy;
     private String updateBy;
     @ManyToMany(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "roles" })
     @JoinTable(name = "permission_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))
     private List<Permission> permissions;
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<User> users;
 
     public long getId() {
+
         return id;
     }
 
@@ -71,21 +75,21 @@ public class Role {
         this.isActive = isActive;
     }
 
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
+    // public Instant getCreatedAt() {
+    // return createdAt;
+    // }
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
+    // public void setCreatedAt(Instant createdAt) {
+    // this.createdAt = createdAt;
+    // }
 
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
+    // public Instant getUpdatedAt() {
+    // return updatedAt;
+    // }
 
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    // public void setUpdatedAt(Instant updatedAt) {
+    // this.updatedAt = updatedAt;
+    // }
 
     public String getCreatedBy() {
         return createdBy;
@@ -105,7 +109,7 @@ public class Role {
 
     @PrePersist
     public void handleBeforeCreate() {
-        this.createdAt = Instant.now();
+        // this.createdAt = Instant.now();
         this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
@@ -113,7 +117,7 @@ public class Role {
 
     @PreUpdate
     public void handleBeforeUpdate() {
-        this.updatedAt = Instant.now();
+        // this.updatedAt = Instant.now();
         this.updateBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
@@ -126,4 +130,13 @@ public class Role {
     public void setPermissions(List<Permission> permissions) {
         this.permissions = permissions;
     }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
 }

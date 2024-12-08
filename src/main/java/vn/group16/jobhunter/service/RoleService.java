@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import vn.group16.jobhunter.domain.Permission;
 import vn.group16.jobhunter.domain.Role;
+import vn.group16.jobhunter.domain.User;
 import vn.group16.jobhunter.repository.PermissionRepository;
 import vn.group16.jobhunter.repository.RoleRepository;
 
@@ -32,5 +33,4 @@ public class RoleService {
         }
         return this.roleRepository.save(role);
     }
-
 }
