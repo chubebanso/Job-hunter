@@ -30,6 +30,8 @@ public class Company {
     @NotBlank(message = "Mô tả công ty không được để trống")
     private String description;
 
+    private String website;
+
     @NotBlank(message = "Địa chỉ không được để trống")
     private String address;
 
@@ -74,6 +76,14 @@ public class Company {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
     }
 
     public String getAddress() {

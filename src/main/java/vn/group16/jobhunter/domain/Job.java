@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -77,10 +78,13 @@ public class Job {
 
     @PrePersist
     public void handleBeforeCreate() {
-        this.createdAt = Instant.now();
+        Instant now = Instant.now();
+        this.createdAt = now;
+        this.updatedAt = now; // Set updatedAt to now when the entity is created
     }
 
-    @PrePersist
+    // Use @PreUpdate for updatedAt field
+    @PreUpdate
     public void handleBeforeUpdate() {
         this.updatedAt = Instant.now();
     }

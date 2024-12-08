@@ -48,13 +48,16 @@ public class CompanyController {
         return ResponseEntity.ok(company);
     }
     
-    // public ResponseEntity<List<Company>> getAllCompanies() {
-    //     List<Company> companies = this.companyService.getAllCompanies();
-    //     return ResponseEntity.ok(companies);
-    // }
-    @GetMapping("/companies")
-    @APIMessage("fetch companies")
-    public ResponseEntity<ResultPaginationDTO> getAllCompanies(Pageable pageable,
+    @GetMapping("/companies/all")
+    @APIMessage("fetch all companies without pagination")
+    public ResponseEntity<List<Company>> getAllCompanies() {
+        List<Company> companies = this.companyService.getAllCompanies();
+        return ResponseEntity.ok(companies);
+    }
+
+    @GetMapping("/companies/pagination")
+    @APIMessage("fetch companies with pagination")
+    public ResponseEntity<ResultPaginationDTO> getAllCompaniesPagination(Pageable pageable,
             @Filter Specification<Company> spec) {
         return ResponseEntity.status(HttpStatus.OK).body(this.companyService.getAllCompaniesPageResultPaginationDTO(spec, pageable));
     }

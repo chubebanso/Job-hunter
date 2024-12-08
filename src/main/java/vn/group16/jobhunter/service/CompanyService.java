@@ -55,9 +55,10 @@ public class CompanyService {
         Optional<Company> updateCompany = this.companyRepository.findById(company.getId());
         if (updateCompany.isPresent()) {
             Company currentCompany = updateCompany.get();
-            currentCompany.setDescription(company.getDescription());
-            currentCompany.setAddress(company.getAddress());
             currentCompany.setName(currentCompany.getName());
+            currentCompany.setDescription(company.getDescription());
+            currentCompany.setWebsite(company.getWebsite());
+            currentCompany.setAddress(company.getAddress());
             currentCompany.setLogo(currentCompany.getLogo());
             return this.companyRepository.save(currentCompany);
         }
