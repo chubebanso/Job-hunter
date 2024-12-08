@@ -1,73 +1,80 @@
-import React, { useEffect, useState } from 'react'
-import Navbar from '../shared/Navbar'
-import { Label } from '../ui/label'
-import { Input } from '../ui/input'
-import { RadioGroup } from '../ui/radio-group'
-import { Button } from '../ui/button'
-import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import { USER_API_END_POINT } from '@/utils/constant'
-import { toast } from 'sonner'
-import { useDispatch, useSelector } from 'react-redux'
-import { setLoading } from '@/redux/authSlice'
-import { Loader2 } from 'lucide-react'
+import React, { useEffect, useState } from 'react';
+import Navbar from '../shared/Navbar';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
+import { RadioGroup } from '../ui/radio-group';
+import { Button } from '../ui/button';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { USER_API_END_POINT } from '@/utils/constant';
+import { toast } from 'sonner';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoading } from '@/redux/authSlice';
+import { Loader2 } from 'lucide-react';
 
 const Signup = () => {
-
     const [input, setInput] = useState({
-        fullname: "",
+        name: "",
         email: "",
         phoneNumber: "",
         password: "",
-        role: "",
-        file: ""
+        roleName: "",
+        age: "",
+        gender: "",
     });
-    const {loading,user} = useSelector(store=>store.auth);
+
+    const { loading, user } = useSelector(store => store.auth);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const changeEventHandler = (e) => {
         setInput({ ...input, [e.target.name]: e.target.value });
-    }
-    const changeFileHandler = (e) => {
-        setInput({ ...input, file: e.target.files?.[0] });
-    }
+    };
+
     const submitHandler = async (e) => {
         e.preventDefault();
 
         const data = {
-            fullname: input.fullname,
+            name: input.name,
             email: input.email,
             phoneNumber: input.phoneNumber,
             password: input.password,
-            role: input.role,
+            roleName: input.roleName,
+            age: input.age,
+            gender: input.gender,
         };
 
         try {
             dispatch(setLoading(true));
+
             const res = await axios.post(`${USER_API_END_POINT}`, data, {
-                headers: { 
+                headers: {
                     'Content-Type': "application/json",
-                 },
+                },
                 withCredentials: true,
             });
+
+            // Kiểm tra kết quả trả về từ API
             if (res.data.success) {
-                navigate("/login");
                 toast.success(res.data.message);
+                navigate("/Login");
+            } else {
+                toast.error(res.data.message || "Something went wrong!");
             }
         } catch (error) {
             console.log(error);
-            toast.error(error.response.data.message);
-        } finally{
+            toast.error(error.response?.data?.message || 'An error occurred');
+        } finally {
             dispatch(setLoading(false));
         }
-    }
+    };
 
-    useEffect(()=>{
-        if(user){
-            navigate("/");
+    useEffect(() => {
+        if (user) {
+            navigate("/");  // Nếu đã đăng nhập, điều hướng về trang chủ
         }
-    },[])
+    }, [user, navigate]);
+
     return (
         <div>
             <Navbar />
@@ -75,13 +82,13 @@ const Signup = () => {
                 <form onSubmit={submitHandler} className='w-1/2 border border-gray-200 rounded-md p-4 my-10'>
                     <h1 className='font-bold text-xl mb-5'>Sign Up</h1>
                     <div className='my-2'>
-                        <Label>Full Name</Label>
+                        <Label>Name</Label>
                         <Input
                             type="text"
-                            value={input.fullname}
-                            name="fullname"
+                            value={input.name}
+                            name="name"
                             onChange={changeEventHandler}
-                            placeholder="patel"
+                            placeholder="John Doe"
                         />
                     </div>
                     <div className='my-2'>
@@ -91,7 +98,7 @@ const Signup = () => {
                             value={input.email}
                             name="email"
                             onChange={changeEventHandler}
-                            placeholder="patel@gmail.com"
+                            placeholder="john.doe@example.com"
                         />
                     </div>
                     <div className='my-2'>
@@ -111,43 +118,56 @@ const Signup = () => {
                             value={input.password}
                             name="password"
                             onChange={changeEventHandler}
-                            placeholder="patel@gmail.com"
+                            placeholder="********"
                         />
                     </div>
-                    <div className='flex items-center justify-between'>
+                    <div className='my-2'>
+                        <Label>Age</Label>
+                        <Input
+                            type="number"
+                            value={input.age}
+                            name="age"
+                            onChange={changeEventHandler}
+                            placeholder="Enter your age"
+                        />
+                    </div>
+                    <div className='my-2'>
+                        <Label>Gender</Label>
                         <RadioGroup className="flex items-center gap-4 my-5">
                             <div className="flex items-center space-x-2">
                                 <Input
                                     type="radio"
-                                    name="role"
-                                    value="student"
-                                    checked={input.role === 'student'}
+                                    name="gender"
+                                    value="MALE"
+                                    checked={input.gender === 'MALE'}
                                     onChange={changeEventHandler}
                                     className="cursor-pointer"
                                 />
-                                <Label htmlFor="r1">Student</Label>
+                                <Label htmlFor="male">Male</Label>
                             </div>
                             <div className="flex items-center space-x-2">
                                 <Input
                                     type="radio"
-                                    name="role"
-                                    value="recruiter"
-                                    checked={input.role === 'recruiter'}
+                                    name="gender"
+                                    value="FEMALE"
+                                    checked={input.gender === 'FEMALE'}
                                     onChange={changeEventHandler}
                                     className="cursor-pointer"
                                 />
-                                <Label htmlFor="r2">Recruiter</Label>
+                                <Label htmlFor="female">Female</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Input
+                                    type="radio"
+                                    name="gender"
+                                    value="OTHER"
+                                    checked={input.gender === 'OTHER'}
+                                    onChange={changeEventHandler}
+                                    className="cursor-pointer"
+                                />
+                                <Label htmlFor="other">Other</Label>
                             </div>
                         </RadioGroup>
-                        <div className='flex items-center gap-2'>
-                            <Label>Profile</Label>
-                            <Input
-                                accept="image/*"
-                                type="file"
-                                onChange={changeFileHandler}
-                                className="cursor-pointer"
-                            />
-                        </div>
                     </div>
                     {
                         loading ? <Button className="w-full my-4"> <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait </Button> : <Button type="submit" className="w-full my-4">Signup</Button>
@@ -156,7 +176,7 @@ const Signup = () => {
                 </form>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Signup
+export default Signup;
