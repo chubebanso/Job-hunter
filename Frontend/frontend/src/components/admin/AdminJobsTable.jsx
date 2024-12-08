@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import { Avatar, AvatarImage } from '../ui/avatar'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
-import { Edit2, Eye, MoreHorizontal } from 'lucide-react'
+import { Edit2, Eye, MoreHorizontal, Trash2 } from 'lucide-react' // Thêm biểu tượng Trash2 cho nút Delete
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
@@ -19,10 +19,17 @@ const AdminJobsTable = () => {
                 return true;
             };
             return job?.title?.toLowerCase().includes(searchJobByText.toLowerCase()) || job?.company?.name.toLowerCase().includes(searchJobByText.toLowerCase());
-
         });
         setFilterJobs(filteredJobs);
     },[allAdminJobs,searchJobByText])
+
+    const handleDeleteJob = (jobId) => {
+        // Bạn có thể gọi API hoặc xử lý xóa trực tiếp ở đây.
+        console.log(`Deleting job with id: ${jobId}`);
+        // Ví dụ: gọi API xóa công việc
+        // dispatch(deleteJob(jobId));
+    }
+
     return (
         <div>
             <Table>
@@ -38,7 +45,7 @@ const AdminJobsTable = () => {
                 <TableBody>
                     {
                         filterJobs?.map((job) => (
-                            <tr>
+                            <tr key={job._id}>
                                 <TableCell>{job?.company?.name}</TableCell>
                                 <TableCell>{job?.title}</TableCell>
                                 <TableCell>{job?.createdAt.split("T")[0]}</TableCell>
@@ -46,19 +53,22 @@ const AdminJobsTable = () => {
                                     <Popover>
                                         <PopoverTrigger><MoreHorizontal /></PopoverTrigger>
                                         <PopoverContent className="w-32">
-                                            <div onClick={()=> navigate(`/admin/companies/${job._id}`)} className='flex items-center gap-2 w-fit cursor-pointer'>
+                                            <div onClick={() => navigate(`/admin/companies/${job._id}`)} className='flex items-center gap-2 w-fit cursor-pointer'>
                                                 <Edit2 className='w-4' />
                                                 <span>Edit</span>
                                             </div>
-                                            <div onClick={()=> navigate(`/admin/jobs/${job._id}/applicants`)} className='flex items-center w-fit gap-2 cursor-pointer mt-2'>
+                                            <div onClick={() => navigate(`/admin/jobs/${job._id}/applicants`)} className='flex items-center w-fit gap-2 cursor-pointer mt-2'>
                                                 <Eye className='w-4'/>
                                                 <span>Applicants</span>
+                                            </div>
+                                            <div onClick={() => handleDeleteJob(job._id)} className='flex items-center w-fit gap-2 cursor-pointer mt-2 text-red-500'>
+                                                <Trash2 className='w-4' />
+                                                <span>Delete</span>
                                             </div>
                                         </PopoverContent>
                                     </Popover>
                                 </TableCell>
                             </tr>
-
                         ))
                     }
                 </TableBody>
