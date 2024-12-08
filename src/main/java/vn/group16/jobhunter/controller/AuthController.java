@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import vn.group16.jobhunter.domain.Role;
 import vn.group16.jobhunter.domain.User;
 import vn.group16.jobhunter.dto.LoginDTO;
 import vn.group16.jobhunter.dto.ResLoginDTO;
+import vn.group16.jobhunter.service.RoleService;
 import vn.group16.jobhunter.service.UserService;
 import vn.group16.jobhunter.util.SecurityUtil;
 import vn.group16.jobhunter.util.annotation.APIMessage;
@@ -32,7 +34,6 @@ public class AuthController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final SecurityUtil securityUtil;
     private final UserService userService;
-
     @Value("${hoidanit.jwt.refresh-token-validity-in-seconds}")
     private long refresh_tokenExpire;
 
@@ -57,9 +58,11 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         ResLoginDTO res = new ResLoginDTO();
         User currentUser = this.userService.getUserByUserName(loginDto.getUsername());
+        Role role = currentUser.getRole();
         if (currentUser != null) {
             ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(currentUser.getId(), currentUser.getEmail(),
                     currentUser.getName());
+            res.setRole(role);
             res.setUserLogin(userLogin);
         }
         String access_token = this.securityUtil.createToken(authentication.getName(), res.getUserLogin());
@@ -101,7 +104,8 @@ public class AuthController {
         org.springframework.security.oauth2.jwt.Jwt decodedToken = this.securityUtil
                 .checkValidRefreshToken(refresh_token);
         String email = decodedToken.getSubject();
-        User currentUser = this.userService.getUserByRefreshTokenAndEmail(email, refresh_token);
+        User currentUser = this.userService.getUserByRefreshTokenAndEmail(email,
+                refresh_token);
         if (currentUser == null) {
             throw new IdInvalidException("Refresh Token khong hop le");
         }
@@ -112,18 +116,21 @@ public class AuthController {
                     currentUser.getName());
             res.setUserLogin(userLogin);
         }
-        String access_token = this.securityUtil.createToken(email, res.getUserLogin());
+        String access_token = this.securityUtil.createToken(email,
+                res.getUserLogin());
         res.setAccessToken(access_token);
         String new_refreshToken = this.securityUtil.createRefreshToken(email, res);
         this.userService.updateToken(new_refreshToken, email);
-        ResponseCookie resCookie = ResponseCookie.from("refresh_token", new_refreshToken)
+        ResponseCookie resCookie = ResponseCookie.from("refresh_token",
+                new_refreshToken)
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
                 .maxAge(refresh_tokenExpire)
                 .build();
         return ResponseEntity.ok()
-                .header(org.springframework.http.HttpHeaders.SET_COOKIE, resCookie.toString())
+                .header(org.springframework.http.HttpHeaders.SET_COOKIE,
+                        resCookie.toString())
                 .body(res);
     }
 
@@ -142,7 +149,8 @@ public class AuthController {
                 .maxAge(0)
                 .build();
         return ResponseEntity.ok()
-                .header(org.springframework.http.HttpHeaders.SET_COOKIE, deleteCookie.toString())
+                .header(org.springframework.http.HttpHeaders.SET_COOKIE,
+                        deleteCookie.toString())
                 .body(null);
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import vn.group16.jobhunter.domain.ResultPaginationDTO;
 import vn.group16.jobhunter.domain.User;
+import vn.group16.jobhunter.dto.CreateUserDTO;
 import vn.group16.jobhunter.service.UserService;
 import vn.group16.jobhunter.util.annotation.APIMessage;
 import vn.group16.jobhunter.util.error.EmailInvalidException;
@@ -38,10 +39,10 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<User> createUser(@RequestBody User postmanUser) throws EmailInvalidException {
+    public ResponseEntity<User> createUser(@RequestBody CreateUserDTO postmanUser) throws EmailInvalidException {
         String hashPassword = this.passwordEncoder.encode(postmanUser.getPassword());
         postmanUser.setPassword(hashPassword);
-        if(this.userService.getUserByUserName(postmanUser.getEmail())!=null){
+        if (this.userService.getUserByUserName(postmanUser.getEmail()) != null) {
             throw new EmailInvalidException("Email bi trung.");
         }
         User user = this.userService.handleCreateUser(postmanUser);
