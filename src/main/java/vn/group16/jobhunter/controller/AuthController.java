@@ -57,7 +57,7 @@ public class AuthController {
         // create token
         SecurityContextHolder.getContext().setAuthentication(authentication);
         ResLoginDTO res = new ResLoginDTO();
-        User currentUser = this.userService.getUserByUserName(loginDto.getEmail());
+        User currentUser = this.userService.getUserByEmail(loginDto.getEmail());
         Role role = currentUser.getRole();
         if (currentUser != null) {
             ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(currentUser.getId(), currentUser.getEmail(),
@@ -84,7 +84,7 @@ public class AuthController {
     @APIMessage("/fetch account")
     ResponseEntity<ResLoginDTO.UserLogin> getAccount() {
         String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
-        User currentUser = this.userService.getUserByUserName(email);
+        User currentUser = this.userService.getUserByEmail(email);
         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin();
         if (currentUser != null) {
             userLogin.setId(currentUser.getId());
@@ -110,7 +110,7 @@ public class AuthController {
             throw new IdInvalidException("Refresh Token khong hop le");
         }
         ResLoginDTO res = new ResLoginDTO();
-        User currentUserDB = this.userService.getUserByUserName(email);
+        User currentUserDB = this.userService.getUserByEmail(email);
         if (currentUserDB != null) {
             ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(currentUser.getId(), currentUser.getEmail(),
                     currentUser.getName());
