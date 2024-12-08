@@ -48,7 +48,7 @@ public class AuthController {
     public ResponseEntity<Object> login(@Valid @RequestBody LoginDTO loginDto) {
         // Nạp input gồm username/password vào Security
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                loginDto.getUsername(), loginDto.getPassword());
+                loginDto.getEmail(), loginDto.getPassword());
 
         // xác thực người dùng => cần viết hàm loadUserByUsername
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -57,7 +57,7 @@ public class AuthController {
         // create token
         SecurityContextHolder.getContext().setAuthentication(authentication);
         ResLoginDTO res = new ResLoginDTO();
-        User currentUser = this.userService.getUserByUserName(loginDto.getUsername());
+        User currentUser = this.userService.getUserByUserName(loginDto.getEmail());
         Role role = currentUser.getRole();
         if (currentUser != null) {
             ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(currentUser.getId(), currentUser.getEmail(),
@@ -67,8 +67,8 @@ public class AuthController {
         }
         String access_token = this.securityUtil.createToken(authentication.getName(), res.getUserLogin());
         res.setAccessToken(access_token);
-        String refreshToken = this.securityUtil.createRefreshToken(loginDto.getUsername(), res);
-        this.userService.updateToken(refreshToken, loginDto.getUsername());
+        String refreshToken = this.securityUtil.createRefreshToken(loginDto.getEmail(), res);
+        this.userService.updateToken(refreshToken, loginDto.getEmail());
         ResponseCookie resCookie = ResponseCookie.from("refresh_token", refreshToken)
                 .httpOnly(true)
                 .secure(true)
