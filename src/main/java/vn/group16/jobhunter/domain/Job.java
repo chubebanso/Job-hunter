@@ -2,6 +2,7 @@ package vn.group16.jobhunter.domain;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -11,6 +12,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
@@ -42,17 +44,9 @@ public class Job {
     @JsonBackReference
     private Company company;
 
-    @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "jobs", fetch = FetchType.LAZY)
     @JsonManagedReference
-    private List<User> applicants;
-
-    public List<User> getApplicants() {
-        return applicants;
-    }
-
-    public void setApplicants(List<User> applicants) {
-        this.applicants = applicants;
-    }
+    private Set<User> applicants;
 
     // Getter and Setter for 'company'
     public Company getCompany() {
@@ -163,5 +157,14 @@ public class Job {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    //associations' getters and setters
+    public Set<User> getApplicants() {
+        return applicants;
+    }
+
+    public void setApplicants(Set<User> applicants) {
+        this.applicants = applicants;
     }
 }

@@ -9,11 +9,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import vn.group16.jobhunter.domain.Job;
 import vn.group16.jobhunter.domain.Meta;
 import vn.group16.jobhunter.domain.ResultPaginationDTO;
 import vn.group16.jobhunter.domain.Role;
 import vn.group16.jobhunter.domain.User;
 import vn.group16.jobhunter.dto.CreateUserDTO;
+import vn.group16.jobhunter.repository.JobRepository;
 import vn.group16.jobhunter.repository.RoleRepository;
 import vn.group16.jobhunter.repository.UserRepository;
 
@@ -22,7 +24,9 @@ public class UserService {
     final private UserRepository userRepository;
     final private RoleRepository roleRepository;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserService(
+        UserRepository userRepository, 
+        RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
     }
@@ -93,6 +97,18 @@ public class UserService {
 
     public User getUserByRefreshTokenAndEmail(String email, String token) {
         return this.userRepository.findByEmailAndRefreshToken(email, token);
+    }
+
+    public User applyUserToJob(User user, Job job){
+        user.getJobs().add(job);
+        job.getApplicants().add(user);
+        return this.userRepository.save(user);
+    }
+
+    public User unapplyUserToJob(User user, Job job){
+        user.getJobs().remove(job);
+        job.getApplicants().remove(user);
+        return this.userRepository.save(user);
     }
 
 }

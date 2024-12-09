@@ -2,9 +2,11 @@ package vn.group16.jobhunter.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import vn.group16.jobhunter.domain.Job;
 import vn.group16.jobhunter.domain.ResultPaginationDTO;
 import vn.group16.jobhunter.domain.User;
 import vn.group16.jobhunter.dto.CreateUserDTO;
+import vn.group16.jobhunter.service.JobService;
 import vn.group16.jobhunter.service.UserService;
 import vn.group16.jobhunter.util.annotation.APIMessage;
 import vn.group16.jobhunter.util.error.EmailInvalidException;
@@ -31,10 +33,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("/api/v1")
 public class UserController {
     final private UserService userService;
+    final private JobService jobService;
     final private PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
+    public UserController(
+        UserService userService,
+        JobService jobService, 
+        PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.jobService = jobService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -48,6 +55,8 @@ public class UserController {
         User user = this.userService.handleCreateUser(postmanUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
+
+
 
     @DeleteMapping("/users/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") long id) throws IdInvalidException {
@@ -75,6 +84,28 @@ public class UserController {
     @PutMapping("/users/update")
     public ResponseEntity<User> updateUser(@RequestBody User userUpdate) {
         return ResponseEntity.ok(this.userService.handleUpdateUser(userUpdate));
+    }
+
+    @PutMapping("/users/{user_id}/apply/{job_id}")
+    public ResponseEntity<User> applyUser(
+        @PathVariable("user_id") long user_id,
+        @PathVariable("job_id") long job_id
+    ) throws IdInvalidException{
+        User tempUser = this.userService.getUserById(user_id);
+        Job tempJob = this.jobService.getJobById(job_id);
+        if(tempUser == null || tempJob == null) throw new IdInvalidException("Cannot find user/job.");
+        else return ResponseEntity.ok(this.userService.applyUserToJob(tempUser, tempJob));
+    }
+
+    @PutMapping("/users/{user_id}/unapply/{job_id}")
+    public ResponseEntity<User> unapplyUser(
+        @PathVariable("user_id") long user_id,
+        @PathVariable("job_id") long job_id
+    ) throws IdInvalidException{
+        User tempUser = this.userService.getUserById(user_id);
+        Job tempJob = this.jobService.getJobById(job_id);
+        if(tempUser == null || tempJob == null) throw new IdInvalidException("Cannot find user/job.");
+        else return ResponseEntity.ok(this.userService.unapplyUserToJob(tempUser, tempJob));
     }
 
 }
