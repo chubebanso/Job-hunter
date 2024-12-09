@@ -1,7 +1,9 @@
 package vn.group16.jobhunter.domain;
 
 import java.time.Instant;
+import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -14,6 +16,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -44,9 +48,19 @@ public class User {
     @JsonManagedReference
     private Profile profile;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_jobs",  // Define a join table to map the relationship
+        joinColumns = @JoinColumn(name = "user_id"),  // User's foreign key
+        inverseJoinColumns = @JoinColumn(name = "job_id")  // Job's foreign key
+    )
+    @JsonBackReference
+    private Set<Job> jobs;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "job_id")
-    private Job job;
+    @JoinColumn(name = "company_id")
+    private Company company;
+
 
     @Enumerated(EnumType.STRING)
 
@@ -138,11 +152,19 @@ public class User {
         this.profile = profile;
     }
 
-    public Job getJob() {
-        return job;
+    public Set<Job> getJobs() {
+        return jobs;
     }
 
-    public void setJob(Job job) {
-        this.job = job;
+    public void setJob(Set<Job> job) {
+        this.jobs = job;
+    }
+    
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 }
