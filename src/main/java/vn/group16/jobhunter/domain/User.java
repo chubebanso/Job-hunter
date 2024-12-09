@@ -44,6 +44,10 @@ public class User {
     @JsonManagedReference
     private Profile profile;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_id")
+    private Job job;
+
     @Enumerated(EnumType.STRING)
 
     public GenderEnum getGender() {
@@ -132,5 +136,13 @@ public class User {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
+    }
+
+    public Job getJob() {
+        return job;
+    }
+
+    public void setJob(Job job) {
+        this.job = job;
     }
 }
