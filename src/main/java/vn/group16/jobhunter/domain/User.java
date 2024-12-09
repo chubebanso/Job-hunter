@@ -2,6 +2,7 @@ package vn.group16.jobhunter.domain;
 
 import java.time.Instant;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -14,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import vn.group16.jobhunter.constant.GenderEnum;
 
@@ -37,6 +39,10 @@ public class User {
     @JoinColumn(name = "role_id")
     @JsonProperty("role")
     private Role role;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Profile profile;
 
     @Enumerated(EnumType.STRING)
 
@@ -120,4 +126,11 @@ public class User {
         this.role = role;
     }
 
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
 }
