@@ -22,6 +22,11 @@ public class CompanyService {
     }
 
     public Company createCompany(Company company) {
+        Company newCompany = new Company();
+        newCompany.setName(company.getName());
+        newCompany.setAddress(company.getAddress());
+        newCompany.setLogo(company.getLogo());
+        newCompany.setWebsite(company.getWebsite());
         return this.companyRepository.save(company);
 
     }

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
@@ -12,12 +14,15 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "jobs")
@@ -25,14 +30,15 @@ public class Job {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
+    @NotBlank(message = "khong duoc de trong job nam ")
     private String name;
+    @NotBlank(message = "khong de trong description")
     private String description;
     private String requirements;
     private String salary;
     private String location;
     private String jobType;
-    
+
     private int experience;
     private int position;
 
@@ -41,12 +47,19 @@ public class Job {
 
     // Many-to-one relationship with Company
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonIgnore
     private Company company;
-
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "jobs" })
+    @JoinTable(name = "job_skills", joinColumns = @JoinColumn(name = "job_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    private List<Skill> skills;
     @ManyToMany(mappedBy = "jobs", fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonIgnore
     private Set<User> applicants;
+
+    public void setApplicants(Set<User> applicants) {
+        this.applicants = applicants;
+    }
 
     // Getter and Setter for 'company'
     public Company getCompany() {
@@ -110,7 +123,7 @@ public class Job {
         this.updatedAt = Instant.now();
     }
 
-    //addition field
+    // addition field
     public String getRequirements() {
         return requirements;
     }
@@ -159,12 +172,16 @@ public class Job {
         this.position = position;
     }
 
-    //associations' getters and setters
     public Set<User> getApplicants() {
         return applicants;
     }
 
-    public void setApplicants(Set<User> applicants) {
-        this.applicants = applicants;
+    public List<Skill> getSkills() {
+        return skills;
     }
+
+    public void setSkills(List<Skill> skills) {
+        this.skills = skills;
+    }
+
 }
