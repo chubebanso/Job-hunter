@@ -37,7 +37,7 @@ public class JobController {
         this.companyService = companyService;
     }
 
-    @PostMapping("/create/{company_id}/job")
+    @PostMapping("/jobs/create/{company_id}")
     public ResponseEntity<?> createJob(
         @Valid @RequestBody Job job,
         @PathVariable("company_id") long company_id) throws IdInvalidException{
@@ -76,12 +76,12 @@ public class JobController {
         return ResponseEntity.ok(jobs);
     }
 
-    @PutMapping("/update/job")
+    @PutMapping("/jobs/update")
     public ResponseEntity<Job> updateCompany(@RequestBody Job job) {
         return ResponseEntity.ok(this.jobService.updateJob(job));
     }
 
-    @DeleteMapping("/delete/job/{id}")
+    @DeleteMapping("/jobs/delete/{id}")
     public ResponseEntity<String> deleteJob(@PathVariable("id") Long job_id) {
         this.jobService.deleteJob(job_id);
         return ResponseEntity.ok("Delete Job Success");

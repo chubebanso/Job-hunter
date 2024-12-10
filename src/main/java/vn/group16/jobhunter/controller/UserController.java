@@ -50,7 +50,7 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("/users")
+    @PostMapping("/users/create")
     public ResponseEntity<User> createUser(@RequestBody CreateUserDTO postmanUser) throws EmailInvalidException {
         String hashPassword = this.passwordEncoder.encode(postmanUser.getPassword());
         postmanUser.setPassword(hashPassword);

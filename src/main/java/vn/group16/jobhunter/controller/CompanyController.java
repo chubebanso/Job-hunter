@@ -35,7 +35,7 @@ public class CompanyController {
         this.companyService = companyService;
     }
 
-    @PostMapping("/create/companies")
+    @PostMapping("/companies/create")
     public ResponseEntity<?> createCompany(@Valid @RequestBody Company company) {
         Company newCompany = this.companyService.createCompany(company);
         return ResponseEntity.status(HttpStatus.CREATED).body(newCompany);
@@ -62,13 +62,13 @@ public class CompanyController {
         return ResponseEntity.status(HttpStatus.OK).body(this.companyService.getAllCompaniesPageResultPaginationDTO(spec, pageable));
     }
 
-    @PutMapping("/update/company")
+    @PutMapping("/companies/update")
     public ResponseEntity<Company> updateCompany(@RequestBody Company company) {
         return ResponseEntity.ok(this.companyService.updateCompany(company));
     }
 
-    @DeleteMapping("/delete/company/{id}")
-    public ResponseEntity<String> deleteCompany(@PathVariable("id") Long company_id) {
+    @DeleteMapping("/companies/delete/{company_id}")
+    public ResponseEntity<String> deleteCompany(@PathVariable("company_id") Long company_id) {
         this.companyService.deleteCompany(company_id);
         return ResponseEntity.ok("Delete Company Success");
     }

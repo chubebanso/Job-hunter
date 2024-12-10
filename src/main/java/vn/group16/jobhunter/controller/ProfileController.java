@@ -37,7 +37,7 @@ public class ProfileController {
         this.userService = userService;
     }
 
-    @PostMapping("/create/{user_id}/profile")
+    @PostMapping("profiles/create/{user_id}")
     public ResponseEntity<?> createProfile(
         @Valid @RequestBody Profile profile,
         @PathVariable("user_id") long user_id) throws IdInvalidException{
@@ -77,18 +77,18 @@ public class ProfileController {
         return ResponseEntity.status(HttpStatus.OK).body(this.profileService.getAllProfilesPageResultPaginationDTO(spec, pageable));
     }
 
-    @PutMapping("/update/profile")
+    @PutMapping("profiles/update")
     public ResponseEntity<Profile> updateProfile(@RequestBody Profile profile) {
         return ResponseEntity.ok(this.profileService.updateProfile(profile));
     }
 
-    @DeleteMapping("/delete/profile/profileID/{id}")
+    @DeleteMapping("profiles/delete/profileID/{id}")
     public ResponseEntity<String> deleteProfileByProfileId(@PathVariable("id") Long id) {
         this.profileService.deleteProfile(id);
         return ResponseEntity.ok("Delete Job Success");
     }
 
-    @DeleteMapping("/delete/profile/userID/{id}")
+    @DeleteMapping("profiles/delete/userID/{id}")
     public ResponseEntity<String> deleteProfileByUserId(@PathVariable("id") Long id) 
     throws IdInvalidException{
         User findUser = this.userService.getUserById(id);
