@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react'
-import Navbar from '../shared/Navbar'
-import { Label } from '../ui/label'
-import { Input } from '../ui/input'
-import { RadioGroup } from '../ui/radio-group'
-import { Button } from '../ui/button'
-import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import { AUTH_API_END_POINT } from '@/utils/constant'
-import { toast } from 'sonner'
-import { useDispatch, useSelector } from 'react-redux'
-import { setLoading, setUser } from '@/redux/authSlice'
-import { Loader2 } from 'lucide-react'
+import React, { useEffect, useState } from 'react';
+import Navbar from '../shared/Navbar';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
+import { Button } from '../ui/button';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { AUTH_API_END_POINT } from '@/utils/constant';
+import { toast } from 'sonner';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoading, setUser } from '@/redux/authSlice';
+import { Loader2 } from 'lucide-react';
 
 const Login = () => {
     const [input, setInput] = useState({
@@ -18,45 +17,49 @@ const Login = () => {
         password: "",
     });
     const { loading, user } = useSelector(store => store.auth);
-    let navigate = useNavigate();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const changeEventHandler = (e) => {
         setInput({ ...input, [e.target.name]: e.target.value });
-    }
+    };
 
     const submitHandler = async (e) => {
         e.preventDefault();
-        const data = {  // Create the data object to send
-            username: input.email,
+        const data = {
+            email: input.email,
             password: input.password,
         };
         try {
             dispatch(setLoading(true));
-            console.log(data);
             const res = await axios.post(`${AUTH_API_END_POINT}/login`, data, {
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
                 withCredentials: true,
             });
-            if (res.status==200) { 
-                dispatch(setUser(res.data.user));
+
+            if (res.status === 200) { 
+                localStorage.setItem("accessToken", res.data.data.accessToken);
+                localStorage.setItem("user", JSON.stringify(res.data.data.userLogin));
+                localStorage.setItem("role", res.data.data.role.name);
                 navigate("/");
                 toast.success(res.data.message);
             }
         } catch (error) {
             console.log(error);
-            toast.error(error.response.data.message);
+            toast.error(error.response?.data?.message || "Đăng nhập thất bại");
         } finally {
             dispatch(setLoading(false));
         }
-    }
-    useEffect(()=>{
-        if(user){
-            navigate("/");
+    };
+
+    useEffect(() => {
+        if (user) {
+            navigate("/"); 
         }
-    },[])
+    }, [user, navigate]);
+
     return (
         <div>
             <Navbar />
@@ -70,7 +73,7 @@ const Login = () => {
                             value={input.email}
                             name="email"
                             onChange={changeEventHandler}
-                            placeholder="patel@gmail.com"
+                            placeholder="user1@gmail.com"
                         />
                     </div>
 
@@ -81,7 +84,7 @@ const Login = () => {
                             value={input.password}
                             name="password"
                             onChange={changeEventHandler}
-                            placeholder="patel@gmail.com"
+                            placeholder="Your password"
                         />
                     </div>
                     {
@@ -91,7 +94,7 @@ const Login = () => {
                 </form>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Login
+export default Login;
