@@ -48,14 +48,13 @@ public class Company {
 
     // One-to-many relationship with Job
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Job> jobs;
 
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<User> users;
 
-    // Getter and Setter for 'jobs' field
     public List<Job> getJobs() {
         return jobs;
     }

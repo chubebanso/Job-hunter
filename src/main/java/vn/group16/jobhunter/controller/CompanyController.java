@@ -47,7 +47,7 @@ public class CompanyController {
 
         return ResponseEntity.ok(company);
     }
-    
+
     @GetMapping("/companies/all")
     @APIMessage("fetch all companies without pagination")
     public ResponseEntity<List<Company>> getAllCompanies() {
@@ -59,7 +59,8 @@ public class CompanyController {
     @APIMessage("fetch companies with pagination")
     public ResponseEntity<ResultPaginationDTO> getAllCompaniesPagination(Pageable pageable,
             @Filter Specification<Company> spec) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.companyService.getAllCompaniesPageResultPaginationDTO(spec, pageable));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(this.companyService.getAllCompaniesPageResultPaginationDTO(spec, pageable));
     }
 
     @PutMapping("/companies/update")
