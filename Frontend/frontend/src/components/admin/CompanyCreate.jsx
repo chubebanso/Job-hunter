@@ -16,7 +16,7 @@ const CompanyCreate = () => {
     const dispatch = useDispatch();
     const registerNewCompany = async () => {
         try {
-            const res = await axios.post(`${COMPANY_API_END_POINT}/register`, {companyName}, {
+            const res = await axios.post(`${COMPANY_API_END_POINT}/create`, {companyName}, {
                 headers:{
                     'Content-Type':'application/json'
                 },
@@ -25,8 +25,8 @@ const CompanyCreate = () => {
             if(res?.data?.success){
                 dispatch(setSingleCompany(res.data.company));
                 toast.success(res.data.message);
-                const companyId = res?.data?.company?._id;
-                navigate(`/admin/companies/${companyId}`);
+                const company_id = res?.data?.company?._id;
+                navigate(`/admin/companies/${company_id}`);
             }
         } catch (error) {
             console.log(error);
