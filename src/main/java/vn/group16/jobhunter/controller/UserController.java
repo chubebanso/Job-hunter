@@ -2,10 +2,12 @@ package vn.group16.jobhunter.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import vn.group16.jobhunter.domain.Company;
 import vn.group16.jobhunter.domain.Job;
 import vn.group16.jobhunter.domain.ResultPaginationDTO;
 import vn.group16.jobhunter.domain.User;
 import vn.group16.jobhunter.dto.CreateUserDTO;
+import vn.group16.jobhunter.service.CompanyService;
 import vn.group16.jobhunter.service.JobService;
 import vn.group16.jobhunter.service.UserService;
 import vn.group16.jobhunter.util.annotation.APIMessage;
@@ -34,14 +36,17 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class UserController {
     final private UserService userService;
     final private JobService jobService;
+    final private CompanyService companyService;
     final private PasswordEncoder passwordEncoder;
 
     public UserController(
         UserService userService,
         JobService jobService, 
+        CompanyService companyService,
         PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.jobService = jobService;
+        this.companyService = companyService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -86,7 +91,7 @@ public class UserController {
         return ResponseEntity.ok(this.userService.handleUpdateUser(userUpdate));
     }
 
-    @PutMapping("/users/{user_id}/apply/{job_id}")
+    @PutMapping("/users/{user_id}/add/jobs/{job_id}")
     public ResponseEntity<User> applyUser(
         @PathVariable("user_id") long user_id,
         @PathVariable("job_id") long job_id
@@ -97,7 +102,7 @@ public class UserController {
         else return ResponseEntity.ok(this.userService.applyUserToJob(tempUser, tempJob));
     }
 
-    @PutMapping("/users/{user_id}/unapply/{job_id}")
+    @PutMapping("/users/{user_id}/remove/jobs/{job_id}")
     public ResponseEntity<User> unapplyUser(
         @PathVariable("user_id") long user_id,
         @PathVariable("job_id") long job_id
@@ -108,4 +113,25 @@ public class UserController {
         else return ResponseEntity.ok(this.userService.unapplyUserToJob(tempUser, tempJob));
     }
 
+    @PutMapping("/users/{user_id}/add/companies/{company_id}")
+    public ResponseEntity<User> addUserToCompany(
+        @PathVariable("user_id") long user_id,
+        @PathVariable("company_id") long company_id
+    ) throws IdInvalidException{
+        User tempUser = this.userService.getUserById(user_id);
+        Company tempCompany = this.companyService.getCompanyById(company_id);
+        if(tempUser == null || tempCompany == null) throw new IdInvalidException("Cannot find user/job.");
+        else return ResponseEntity.ok(this.userService.addUserToCompany(tempUser, tempCompany));
+    }
+    
+    @PutMapping("/users/{user_id}/remove/companies/{company_id}")
+    public ResponseEntity<User> removeUserFromCompany(
+        @PathVariable("user_id") long user_id,
+        @PathVariable("company_id") long company_id
+    ) throws IdInvalidException{
+        User tempUser = this.userService.getUserById(user_id);
+        Company tempCompany = this.companyService.getCompanyById(company_id);
+        if(tempUser == null || tempCompany == null) throw new IdInvalidException("Cannot find user/job.");
+        else return ResponseEntity.ok(this.userService.removeUserFromCompany(tempUser, tempCompany));
+    }
 }

@@ -58,7 +58,7 @@ public class User {
     private Set<Job> jobs;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JsonBackReference
     private Company company;
 
 

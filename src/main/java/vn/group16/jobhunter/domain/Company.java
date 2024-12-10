@@ -2,6 +2,7 @@ package vn.group16.jobhunter.domain;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -50,6 +51,10 @@ public class Company {
     @JsonManagedReference
     private List<Job> jobs;
 
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Set<User> users;
+
     // Getter and Setter for 'jobs' field
     public List<Job> getJobs() {
         return jobs;
@@ -57,6 +62,14 @@ public class Company {
 
     public void setJobs(List<Job> jobs) {
         this.jobs = jobs;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 
     public long getId() {
