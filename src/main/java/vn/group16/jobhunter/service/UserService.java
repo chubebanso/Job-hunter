@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import vn.group16.jobhunter.domain.Company;
 import vn.group16.jobhunter.domain.Job;
 import vn.group16.jobhunter.domain.Meta;
 import vn.group16.jobhunter.domain.ResultPaginationDTO;
@@ -111,4 +112,15 @@ public class UserService {
         return this.userRepository.save(user);
     }
 
+    public User addUserToCompany(User user, Company company){
+        user.setCompany(company);
+        company.getUsers().add(user);
+        return this.userRepository.save(user);
+    }
+
+    public User removeUserFromCompany(User user, Company company){
+        user.setCompany(null);
+        company.getUsers().remove(user);
+        return this.userRepository.save(user);
+    }
 }
