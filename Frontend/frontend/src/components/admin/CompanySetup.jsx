@@ -13,7 +13,7 @@ import useGetCompanyById from '@/hooks/useGetCompanyById'
 
 const CompanySetup = () => {
     const params = useParams();
-    useGetCompanyById(params.id);
+    useGetCompanyById(param.id);
     const [input, setInput] = useState({
         name: "",
         description: "",
@@ -36,19 +36,20 @@ const CompanySetup = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
-        const formData = new FormData();
-        formData.append("name", input.name);
-        formData.append("description", input.description);
-        formData.append("website", input.website);
-        formData.append("location", input.location);
-        if (input.file) {
-            formData.append("file", input.file);
-        }
+        
+        const jsonData = {
+            name: input.name,
+            description: input.description,
+            website: input.website,
+            location: input.location,
+            file: input.file ? input.file : null
+        };
+    
         try {
             setLoading(true);
-            const res = await axios.put(`${COMPANY_API_END_POINT}/update/${params.id}`, formData, {
+            const res = await axios.put(`${COMPANY_API_END_POINT}/update/`, data, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'application/json'
                 },
                 withCredentials: true
             });
@@ -63,6 +64,7 @@ const CompanySetup = () => {
             setLoading(false);
         }
     }
+    
 
     useEffect(() => {
         setInput({

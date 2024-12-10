@@ -23,7 +23,7 @@ const PostJob = () => {
         jobType: "",
         experience: "",
         position: 0,
-        companyId: ""
+        company_id: ""
     });
     const [loading, setLoading]= useState(false);
     const navigate = useNavigate();
@@ -35,14 +35,14 @@ const PostJob = () => {
 
     const selectChangeHandler = (value) => {
         const selectedCompany = companies.find((company)=> company.name.toLowerCase() === value);
-        setInput({...input, companyId:selectedCompany._id});
+        setInput({...input, company_id:selectedCompany._id});
     };
 
     const submitHandler = async (e) => {
         e.preventDefault();
         try {
             setLoading(true);
-            const res = await axios.post(`${JOB_API_END_POINT}/post`, input,{
+            const res = await axios.post(`${JOB_API_END_POINT}/create/${company_id}`, input,{
                 headers:{
                     'Content-Type':'application/json'
                 },

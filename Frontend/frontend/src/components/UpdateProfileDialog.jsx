@@ -6,7 +6,7 @@ import { Button } from './ui/button'
 import { Loader2 } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
-import { USER_API_END_POINT } from '@/utils/constant'
+import { PROFILE_API_END_POINT, USER_API_END_POINT } from '@/utils/constant'
 import { setUser } from '@/redux/authSlice'
 import { toast } from 'sonner'
 
@@ -18,6 +18,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         name: user?.name || "",
         email: user?.email || "",
         bio: user?.profile?.bio || "",
+        phoneNumber: user?.phoneNumber || "",
         skills: user?.profile?.skills?.map(skill => skill) || "",
         file: user?.profile?.resume || ""
     });
@@ -52,8 +53,8 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         try {
             setLoading(true);
     
-            // Gửi yêu cầu POST với JSON thay vì FormData
-            const res = await axios.post(`${USER_API_END_POINT}/users/update`, jsonData, {
+        
+            const res = await axios.post(`${PROFILE_API_END_POINT}/update`, data, {
                 headers: {
                     'Content-Type': 'application/json', // Cập nhật header thành 'application/json'
                 },

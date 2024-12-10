@@ -23,11 +23,11 @@ const AdminJobsTable = () => {
         setFilterJobs(filteredJobs);
     },[allAdminJobs,searchJobByText])
 
-    const handleDeleteJob = (jobId) => {
+    const handleDeleteJob = (job_id) => {
         // Bạn có thể gọi API hoặc xử lý xóa trực tiếp ở đây.
-        console.log(`Deleting job with id: ${jobId}`);
+        console.log(`Deleting job with id: ${job_id}`);
         // Ví dụ: gọi API xóa công việc
-        // dispatch(deleteJob(jobId));
+        // dispatch(deleteJob(job_id));
     }
 
     return (
@@ -53,15 +53,15 @@ const AdminJobsTable = () => {
                                     <Popover>
                                         <PopoverTrigger><MoreHorizontal /></PopoverTrigger>
                                         <PopoverContent className="w-32">
-                                            <div onClick={() => navigate(`/admin/companies/${job._id}`)} className='flex items-center gap-2 w-fit cursor-pointer'>
+                                            <div onClick={() => navigate(`/admin/companies/${job_id}`)} className='flex items-center gap-2 w-fit cursor-pointer'>
                                                 <Edit2 className='w-4' />
                                                 <span>Edit</span>
                                             </div>
-                                            <div onClick={() => navigate(`/admin/jobs/${job._id}/applicants`)} className='flex items-center w-fit gap-2 cursor-pointer mt-2'>
+                                            <div onClick={() => navigate(`/admin/jobs/${job_id}/applicants`)} className='flex items-center w-fit gap-2 cursor-pointer mt-2'>
                                                 <Eye className='w-4'/>
                                                 <span>Applicants</span>
                                             </div>
-                                            <div onClick={() => handleDeleteJob(job._id)} className='flex items-center w-fit gap-2 cursor-pointer mt-2 text-red-500'>
+                                            <div onClick={() => handleDeleteJob(job_id)} className='flex items-center w-fit gap-2 cursor-pointer mt-2 text-red-500'>
                                                 <Trash2 className='w-4' />
                                                 <span>Delete</span>
                                             </div>

@@ -8,7 +8,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-const ROLE_API = 'http://localhost:8080/api/v1'; // Cập nhật URL API backend
 
 const RoleManagement = () => {
     const [roles, setRoles] = useState([]);  // Danh sách các role
@@ -19,18 +18,18 @@ const RoleManagement = () => {
     // Fetch danh sách role từ backend
     useEffect(() => {
         fetchRoles();
-    }, []);
+    }, []); 
 
     // Fetch danh sách các role từ API backend
-    const fetchRoles = async () => {
-        try {
-            const res = await axios.get(`${ROLE_API}`);  // Cập nhật URL backend
-            setRoles(res.data);  // Lưu dữ liệu các role vào state
-        } catch (error) {
-            console.error(error);
-            toast.error('Failed to fetch roles.');
-        }
-    };
+    // const fetchRoles = async () => {
+    //     try {
+    //         const res = await axios.get(`${ROLE_API}`);  // Cập nhật URL backend
+    //         setRoles(res.data);  // Lưu dữ liệu các role vào state
+    //     } catch (error) {
+    //         console.error(error);
+    //         toast.error('Failed to fetch roles.');
+    //     }
+    // };
 
     // Xử lý thay đổi input khi người dùng nhập
     const handleInputChange = (e) => {
