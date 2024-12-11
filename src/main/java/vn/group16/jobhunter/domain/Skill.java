@@ -24,6 +24,7 @@ public class Skill {
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "skills")
     @JsonIgnore
     private List<Job> job;
+    
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "skills")
     @JsonIgnore
     private List<Subscriber> subscribers;
