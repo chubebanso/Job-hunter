@@ -59,7 +59,7 @@ public class Job {
 
     //////////////////////////////////////////////// 2024/12/11
 
-    @ManyToMany(mappedBy = "jobs", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "acceptedJobs", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<User> acceptedApplicants;
 
@@ -71,7 +71,7 @@ public class Job {
         this.acceptedApplicants = acceptedApplicants;
     }
 
-    @ManyToMany(mappedBy = "jobs", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "rejectedJobs", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<User> rejectedApplicants;
 

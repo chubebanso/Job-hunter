@@ -134,7 +134,7 @@ public class UserController {
         return ResponseEntity.ok(this.userService.userRemoveAccepted(tempUser, tempJob));
     }
 
-    @PutMapping("/users/{user_id}/add/jobs/{job_id}/accepted")
+    @PutMapping("/users/{user_id}/add/jobs/{job_id}/rejected")
     public ResponseEntity<User> userAddRejected(
         @PathVariable("user_id") long user_id,
         @PathVariable("job_id") long job_id
@@ -144,7 +144,7 @@ public class UserController {
         return ResponseEntity.ok(this.userService.userAddRejected(tempUser, tempJob));
     }
 
-    @PutMapping("/users/{user_id}/add/jobs/{job_id}/accepted")
+    @PutMapping("/users/{user_id}/remove/jobs/{job_id}/rejected")
     public ResponseEntity<User> userRemoveRejected(
         @PathVariable("user_id") long user_id,
         @PathVariable("job_id") long job_id
