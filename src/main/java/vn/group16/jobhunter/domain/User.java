@@ -32,7 +32,7 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private GenderEnum gender;
+    private GenderEnum gender; //xóa trường này và age đi, hoặc vứt sang profile
     private Instant createdAt;
     private Instant updateAt;
     private long age;

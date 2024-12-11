@@ -72,4 +72,6 @@ public class ProfileService {
     public void deleteProfile(Long profile_id) {
         this.profileRepository.deleteById(profile_id);
     }
+
+
 }
