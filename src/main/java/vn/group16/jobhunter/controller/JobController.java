@@ -1,6 +1,7 @@
 package vn.group16.jobhunter.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -21,6 +22,7 @@ import jakarta.validation.Valid;
 import vn.group16.jobhunter.domain.Company;
 import vn.group16.jobhunter.domain.Job;
 import vn.group16.jobhunter.domain.ResultPaginationDTO;
+import vn.group16.jobhunter.domain.User;
 import vn.group16.jobhunter.service.CompanyService;
 import vn.group16.jobhunter.service.JobService;
 import vn.group16.jobhunter.util.annotation.APIMessage;
@@ -53,6 +55,18 @@ public class JobController {
     public ResponseEntity<Job> getJobById(@PathVariable("job_id") long job_id) {
         Job job = this.jobService.getJobById(job_id);
         return ResponseEntity.ok(job);
+    }
+
+    @GetMapping("/jobs/{job_id}/acceptedList")
+    public ResponseEntity<Set<User>> getAcceptedListJobById(@PathVariable("job_id") long job_id) {
+        Job job = this.jobService.getJobById(job_id);
+        return ResponseEntity.ok(job.getAcceptedApplicants());
+    }
+
+    @GetMapping("/jobs/{job_id}/rejectedList")
+    public ResponseEntity<Set<User>> getRejectedListJobById(@PathVariable("job_id") long job_id) {
+        Job job = this.jobService.getJobById(job_id);
+        return ResponseEntity.ok(job.getRejectedApplicants());
     }
 
     @GetMapping("/jobs/all")
