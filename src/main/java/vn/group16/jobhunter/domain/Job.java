@@ -57,6 +57,34 @@ public class Job {
     @JsonIgnore
     private Set<User> applicants;
 
+    //////////////////////////////////////////////// 2024/12/11
+
+    @ManyToMany(mappedBy = "jobs", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<User> acceptedApplicants;
+
+    public Set<User> getAcceptedApplicants() {
+        return acceptedApplicants;
+    }
+
+    public void setAcceptedApplicants(Set<User> acceptedApplicants) {
+        this.acceptedApplicants = acceptedApplicants;
+    }
+
+    @ManyToMany(mappedBy = "jobs", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<User> rejectedApplicants;
+
+    public Set<User> getRejectedApplicants() {
+        return rejectedApplicants;
+    }
+
+    public void setRejectedApplicants(Set<User> rejectedApplicants) {
+        this.rejectedApplicants = rejectedApplicants;
+    }
+
+    ////////////////////////////////////////////////
+
     public void setApplicants(Set<User> applicants) {
         this.applicants = applicants;
     }

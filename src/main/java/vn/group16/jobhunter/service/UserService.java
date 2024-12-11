@@ -112,6 +112,34 @@ public class UserService {
         return this.userRepository.save(user);
     }
 
+    //////////////////////////////////////////////// 2024/12/11
+    
+    public User userAddAccepted(User user, Job job){
+        user.getAcceptedJobs().add(job);
+        job.getAcceptedApplicants().add(user);
+        return this.userRepository.save(user);
+    }
+
+    public User userRemoveAccepted(User user, Job job){
+        user.getAcceptedJobs().remove(job);
+        job.getAcceptedApplicants().remove(user);
+        return this.userRepository.save(user);
+    }
+
+    public User userAddRejected(User user, Job job){
+        user.getRejectedJobs().add(job);
+        job.getRejectedApplicants().add(user);
+        return this.userRepository.save(user);
+    }
+
+    public User userRemoveRejected(User user, Job job){
+        user.getRejectedJobs().remove(job);
+        job.getRejectedApplicants().remove(user);
+        return this.userRepository.save(user);
+    }
+
+    ////////////////////////////////////////////////
+
     public User addUserToCompany(User user, Company company){
         user.setCompany(company);
         company.getUsers().add(user);
