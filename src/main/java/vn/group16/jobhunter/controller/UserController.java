@@ -16,6 +16,7 @@ import vn.group16.jobhunter.util.error.IdInvalidException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.turkraft.springfilter.boot.Filter;
 import org.springframework.data.domain.Pageable;
@@ -77,6 +78,12 @@ public class UserController {
         User user = this.userService.getUserById(user_id);
 
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/users/{user_id}/jobList")
+    public ResponseEntity<Set<Job>> getApplicantListJobById(@PathVariable("user_id") long user_id) {
+        User user = this.userService.getUserById(user_id);
+        return ResponseEntity.ok(user.getJobs());
     }
 
     @GetMapping("/users/all")
