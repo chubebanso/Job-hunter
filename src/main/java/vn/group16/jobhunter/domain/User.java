@@ -57,7 +57,7 @@ public class User {
     private Set<Job> jobs;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonBackReference
+    @JsonManagedReference
     private Company company;
 
 
