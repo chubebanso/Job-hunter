@@ -39,6 +39,11 @@ public class CompanyService {
         return null;
     }
 
+    public Company getCompanyByName(String name){
+        Company companyOptional = this.companyRepository.findByName(name);
+        return companyOptional;
+    }
+
     public List<Company> getAllCompanies() {
         return this.companyRepository.findAll();
     }
