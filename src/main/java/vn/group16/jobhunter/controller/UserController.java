@@ -184,4 +184,26 @@ public class UserController {
         if(tempUser == null || tempCompany == null) throw new IdInvalidException("Cannot find user/job.");
         else return ResponseEntity.ok(this.userService.removeUserFromCompany(tempUser, tempCompany));
     }
+
+    @PutMapping("/users/{user_id}/add/companies/name/{company_name}")
+    public ResponseEntity<User> addUserToCompanyByName(
+        @PathVariable("user_id") long user_id,
+        @PathVariable("company_name") String company_name
+    ) throws IdInvalidException{
+        User tempUser = this.userService.getUserById(user_id);
+        Company tempCompany = this.companyService.getCompanyByName(company_name);
+        if(tempUser == null || tempCompany == null) throw new IdInvalidException("Cannot find user/job.");
+        else return ResponseEntity.ok(this.userService.addUserToCompany(tempUser, tempCompany));
+    }
+    
+    @PutMapping("/users/{user_id}/remove/companies/name/{company_name}")
+    public ResponseEntity<User> removeUserFromCompanyByName(
+        @PathVariable("user_id") long user_id,
+        @PathVariable("company_name") String company_name
+    ) throws IdInvalidException{
+        User tempUser = this.userService.getUserById(user_id);
+        Company tempCompany = this.companyService.getCompanyByName(company_name);
+        if(tempUser == null || tempCompany == null) throw new IdInvalidException("Cannot find user/job.");
+        else return ResponseEntity.ok(this.userService.removeUserFromCompany(tempUser, tempCompany));
+    }
 }
