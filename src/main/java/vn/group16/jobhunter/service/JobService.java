@@ -66,7 +66,6 @@ public class JobService {
             Job currentJob = updateJob.get();
             currentJob.setName(currentJob.getName());
             currentJob.setDescription(job.getDescription());
-            currentJob.setRequirements(job.getRequirements());
             currentJob.setSalary(job.getSalary());
             currentJob.setLocation(job.getLocation());
             currentJob.setJobType(job.getJobType());

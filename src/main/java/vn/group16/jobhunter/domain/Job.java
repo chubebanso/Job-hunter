@@ -34,7 +34,7 @@ public class Job {
     private String name;
     @NotBlank(message = "khong de trong description")
     private String description;
-    private String requirements;
+
     private String salary;
     private String location;
     private String jobType;
@@ -49,10 +49,12 @@ public class Job {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     private Company company;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "jobs" })
     @JoinTable(name = "job_skills", joinColumns = @JoinColumn(name = "job_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private List<Skill> skills;
+
     @ManyToMany(mappedBy = "jobs", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<User> applicants;
@@ -124,13 +126,6 @@ public class Job {
     }
 
     // addition field
-    public String getRequirements() {
-        return requirements;
-    }
-
-    public void setRequirements(String requirements) {
-        this.requirements = requirements;
-    }
 
     public String getSalary() {
         return salary;

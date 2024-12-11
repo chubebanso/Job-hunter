@@ -1,6 +1,8 @@
 package vn.group16.jobhunter.domain;
 
 import java.util.List;
+import java.util.Set;
+
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,12 +21,18 @@ public class Skill {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
+
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "skills")
     @JsonIgnore
     private List<Job> job;
+
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "skills")
     @JsonIgnore
     private List<Subscriber> subscribers;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "skills")
+    @JsonIgnore
+    private Set<Profile> profile;
 
     public String getName() {
         return name;
@@ -56,6 +64,14 @@ public class Skill {
 
     public void setJob(List<Job> job) {
     this.job = job;
+    }
+
+    public Set<Profile> getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Set<Profile> profile) {
+        this.profile = profile;
     }
 
 }
