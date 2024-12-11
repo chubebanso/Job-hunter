@@ -1,6 +1,7 @@
 package vn.group16.jobhunter.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,13 @@ public class SkillService {
 
     public SkillService(SkillRepository skillRepository) {
         this.skillRepository = skillRepository;
+    }
+
+    public Skill getSkillById(long id){
+        Optional<Skill> tempSkill = this.skillRepository.findById(id);
+        if(tempSkill.isPresent())
+            return tempSkill.get();
+        return null;
     }
 
     public List<Skill> getAllSkill() {

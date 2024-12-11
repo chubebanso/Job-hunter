@@ -66,4 +66,12 @@ public class Skill {
     this.job = job;
     }
 
+    public Set<Profile> getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Set<Profile> profile) {
+        this.profile = profile;
+    }
+
 }

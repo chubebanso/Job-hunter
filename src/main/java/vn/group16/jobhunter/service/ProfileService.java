@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import vn.group16.jobhunter.domain.Meta;
 import vn.group16.jobhunter.domain.Profile;
 import vn.group16.jobhunter.domain.ResultPaginationDTO;
+import vn.group16.jobhunter.domain.Skill;
 import vn.group16.jobhunter.domain.User;
 import vn.group16.jobhunter.repository.ProfileRepository;
 
@@ -18,7 +19,8 @@ import vn.group16.jobhunter.repository.ProfileRepository;
 public class ProfileService {
     final private ProfileRepository profileRepository;
 
-    public ProfileService(ProfileRepository profileRepository){
+    public ProfileService(
+        ProfileRepository profileRepository){
         this.profileRepository = profileRepository;
     }
 
@@ -73,5 +75,15 @@ public class ProfileService {
         this.profileRepository.deleteById(profile_id);
     }
 
+    public Profile addSkillToProfile(Profile profile, Skill skill){
+        profile.getSkills().add(skill);
+        skill.getProfile().add(profile);
+        return this.profileRepository.save(profile);
+    }
 
+    public Profile removeSkillToProfile(Profile profile, Skill skill){
+        profile.getSkills().remove(skill);
+        skill.getProfile().remove(profile);
+        return this.profileRepository.save(profile);
+    }
 }

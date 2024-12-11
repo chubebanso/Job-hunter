@@ -20,8 +20,10 @@ import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import vn.group16.jobhunter.domain.Profile;
 import vn.group16.jobhunter.domain.ResultPaginationDTO;
+import vn.group16.jobhunter.domain.Skill;
 import vn.group16.jobhunter.domain.User;
 import vn.group16.jobhunter.service.ProfileService;
+import vn.group16.jobhunter.service.SkillService;
 import vn.group16.jobhunter.service.UserService;
 import vn.group16.jobhunter.util.annotation.APIMessage;
 import vn.group16.jobhunter.util.error.IdInvalidException;
@@ -31,10 +33,12 @@ import vn.group16.jobhunter.util.error.IdInvalidException;
 public class ProfileController {
     final private ProfileService profileService;
     final private UserService userService;
+    final private SkillService skillService;
 
-    public ProfileController(ProfileService profileService, UserService userService){
+    public ProfileController(ProfileService profileService, UserService userService, SkillService skillService){
         this.profileService = profileService;
         this.userService = userService;
+        this.skillService = skillService;
     }
 
     @PostMapping("profiles/create/{user_id}")
@@ -97,5 +101,23 @@ public class ProfileController {
             this.profileService.deleteProfile(findUser.getProfile().getId());
             return ResponseEntity.ok("Delete Job Success");
         }
+    }
+
+    @PutMapping("profiles/{profile_id}/skills/add/{skill_id}")
+    public ResponseEntity<Profile> profileAddSkill(
+        @PathVariable("profile_id") long profile_id,
+        @PathVariable("skill_id") long skill_id){
+        Skill skill = this.skillService.getSkillById(skill_id);
+        Profile profile = this.profileService.getProfileById(profile_id);
+        return ResponseEntity.ok(this.profileService.addSkillToProfile(profile, skill));
+    }
+
+    @PutMapping("profiles/{profile_id}/skills/remove/{skill_id}")
+    public ResponseEntity<Profile> profileRemoveSkill(
+        @PathVariable("profile_id") long profile_id,
+        @PathVariable("skill_id") long skill_id){
+        Skill skill = this.skillService.getSkillById(skill_id);
+        Profile profile = this.profileService.getProfileById(profile_id);
+        return ResponseEntity.ok(this.profileService.removeSkillToProfile(profile, skill));
     }
 }
