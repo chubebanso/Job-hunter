@@ -20,7 +20,7 @@ public class EmailController {
     }
 
     @GetMapping("/email")
-    @Scheduled(cron = "*/6000 * * * * *")
+    // @Scheduled(cron = "*/6000000 * * * * *")
     public String sendEmail() {
         this.subscriberService.sendSubscribersEmailJobs();
         ;
