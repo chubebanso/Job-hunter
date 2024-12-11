@@ -21,12 +21,10 @@ public class Skill {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
-
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "skills")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "skills")
     @JsonIgnore
     private List<Job> job;
-
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "skills")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "skills")
     @JsonIgnore
     private List<Subscriber> subscribers;
 
@@ -59,11 +57,11 @@ public class Skill {
     }
 
     public List<Job> getJob() {
-    return job;
+        return job;
     }
 
     public void setJob(List<Job> job) {
-    this.job = job;
+        this.job = job;
     }
 
     public Set<Profile> getProfile() {

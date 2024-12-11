@@ -8,4 +8,5 @@ import vn.group16.jobhunter.domain.Skill;
 
 public interface SkillRepository extends JpaRepository<Skill, Long> {
     List<Skill> findByIdIn(List<Long> id);
+
 }
