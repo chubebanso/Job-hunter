@@ -25,7 +25,7 @@ public class Subscriber {
     private String name;
     @NotBlank(message = "Email khong duoc de trong")
     private String email;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnoreProperties(value = { "subscribers" })
     @JoinTable(name = "subscriber_skill", joinColumns = @JoinColumn(name = "skill_id"), inverseJoinColumns = @JoinColumn(name = "subcriber_id"))
     List<Skill> skills;

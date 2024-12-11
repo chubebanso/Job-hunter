@@ -46,16 +46,14 @@ public class Job {
     private Instant updatedAt;
 
     // Many-to-one relationship with Company
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     private Company company;
-
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnoreProperties(value = { "jobs" })
     @JoinTable(name = "job_skills", joinColumns = @JoinColumn(name = "job_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private List<Skill> skills;
-
-    @ManyToMany(mappedBy = "jobs", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "jobs", fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<User> applicants;
 

@@ -8,6 +8,7 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.thymeleaf.context.Context;
@@ -41,6 +42,7 @@ public class EmailService {
         this.mailSender.send(msg);
     }
 
+    @Async
     public void sendEmailSync(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
         // Prepare message using a Spring helper
         MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
@@ -55,12 +57,11 @@ public class EmailService {
         }
     }
 
-    public void sendEmailFromTemplateSync(String to, String subject, String templateName) {
+    public void sendEmailFromTemplateSync(String to, String subject, String templateName, String username,
+            Object value) {
         Context context = new Context();
-        List<Job> allJobs = this.jobRepository.findAll();
-        String name = "Lam";
-        context.setVariable("name1", name);
-        context.setVariable("jobs", allJobs);
+        context.setVariable("name1", username);
+        context.setVariable("jobs", value);
         String content = this.springTemplateEngine.process(templateName, context);
         this.sendEmailSync(to, subject, content, false, true);
     }

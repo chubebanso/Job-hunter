@@ -30,7 +30,7 @@ public class Permission {
     @NotNull(message = "Không để trống medule")
     private String module;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permissions")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "permissions")
     @JsonIgnore
     private List<Role> roles;
 

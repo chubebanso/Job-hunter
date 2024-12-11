@@ -47,7 +47,7 @@ test.html
                                             <a href="https://www.facebook.com/hoanglam.vu.16547/" target="_blank"
                                                 style="text-decoration: none;" th:text="${job.name}"></a>
                                         </div>
-                                        <div style="font-size: 14px;">VINAKET CO.LTD</div>
+                                        <div style="font-size: 14px;"th:text="${job.company.name}"></div>
                                         <div style="font-size: 14px;" th:text="${job.salary}"></div>
                                         <div style="margin-top: 5px;">
                                             <span th:each="skill : ${job.skills}"
