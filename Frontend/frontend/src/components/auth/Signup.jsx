@@ -38,12 +38,13 @@ const Signup = () => {
             password: input.password,
             age: input.age,
             gender: input.gender,
+            roleName: "USER"
         };
 
         try {
             dispatch(setLoading(true));
 
-            const res = await axios.post(`${USER_API_END_POINT}`, data, {
+            const res = await axios.post(`${USER_API_END_POINT}/create`, data, {
                 headers: {
                     'Content-Type': "application/json",
                 },
