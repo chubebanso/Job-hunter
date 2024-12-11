@@ -34,7 +34,7 @@ public class UploadService {
             if (!dir.exists()) {
                 dir.mkdirs();
             }
-            finalName = File.separator + System.currentTimeMillis() + file.getOriginalFilename();
+            finalName = File.separator + file.getOriginalFilename();
             File serlverFile = new File(dir.getAbsolutePath() + finalName);
 
             BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serlverFile));

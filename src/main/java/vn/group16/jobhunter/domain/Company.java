@@ -53,7 +53,7 @@ public class Company {
     private List<Job> jobs;
 
     @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
-    @JsonBackReference
+    @JsonIgnore
     private Set<User> users;
 
     public List<Job> getJobs() {
