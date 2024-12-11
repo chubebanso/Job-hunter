@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -42,10 +43,11 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     @JsonProperty("role")
+    @JsonIgnore
     private Role role;
 
     @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @JsonIgnore
     private Profile profile;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -53,11 +55,11 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"), // User's foreign key
             inverseJoinColumns = @JoinColumn(name = "job_id") // Job's foreign key
     )
-    @JsonBackReference
+    @JsonIgnore
     private Set<Job> jobs;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @JsonIgnore
     private Company company;
 
 
@@ -69,7 +71,7 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id"),  // User's foreign key
         inverseJoinColumns = @JoinColumn(name = "job_id")  // Job's foreign key
     )
-    @JsonBackReference
+    @JsonIgnore
     private Set<Job> acceptedJobs;
 
     public Set<Job> getAcceptedJobs() {
@@ -86,7 +88,7 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id"),  // User's foreign key
         inverseJoinColumns = @JoinColumn(name = "job_id")  // Job's foreign key
     )
-    @JsonBackReference
+    @JsonIgnore
     private Set<Job> rejectedJobs;
 
     public Set<Job> getRejectedJobs() {

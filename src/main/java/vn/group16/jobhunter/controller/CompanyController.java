@@ -64,7 +64,7 @@ public class CompanyController {
     }
 
     @PutMapping("/companies/update")
-    public ResponseEntity<Company> updateCompany(@RequestBody Company company) {
+    public ResponseEntity<Company> updateCompany(@Valid @RequestBody Company company) {
         return ResponseEntity.ok(this.companyService.updateCompany(company));
     }
 
