@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -52,7 +53,7 @@ public class Company {
     private List<Job> jobs;
 
     @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @JsonBackReference
     private Set<User> users;
 
     public List<Job> getJobs() {
