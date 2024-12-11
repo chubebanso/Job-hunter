@@ -51,10 +51,12 @@ public class Job {
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     private Company company;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnoreProperties(value = { "jobs" })
     @JoinTable(name = "job_skills", joinColumns = @JoinColumn(name = "job_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private List<Skill> skills;
+    
     @ManyToMany(mappedBy = "jobs", fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<User> applicants;

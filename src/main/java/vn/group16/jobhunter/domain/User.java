@@ -43,6 +43,7 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     @JsonProperty("role")
+    @JsonIgnore
     private Role role;
 
     @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)

@@ -33,7 +33,7 @@ public class Profile {
     private Instant dateOfBirth;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JsonBackReference
+    @JsonIgnore
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 

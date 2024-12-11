@@ -19,6 +19,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.turkraft.springfilter.boot.Filter;
+
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -93,9 +96,10 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.getAllUser(spec, pageable));
     }
 
-    @PutMapping("/users/update")
-    public ResponseEntity<User> updateUser(@RequestBody User userUpdate) {
-        return ResponseEntity.ok(this.userService.handleUpdateUser(userUpdate));
+    @PutMapping("/users/update/{user_id}")
+    public ResponseEntity<User> updateUser(
+        @Valid @RequestBody User userUpdate, @PathVariable("user_id") long user_id) {
+        return ResponseEntity.ok(this.userService.handleUpdateUser(userUpdate, user_id));
     }
 
     @PutMapping("/users/{user_id}/add/jobs/{job_id}")
