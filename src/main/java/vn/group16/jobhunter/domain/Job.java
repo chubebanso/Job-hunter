@@ -45,6 +45,8 @@ public class Job {
     private Instant createdAt;
     private Instant updatedAt;
 
+    
+
     // Many-to-one relationship with Company
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
