@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -32,7 +33,7 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private GenderEnum gender; //xóa trường này và age đi, hoặc vứt sang profile
+    private GenderEnum gender; // xóa trường này và age đi, hoặc vứt sang profile
     private Instant createdAt;
     private Instant updateAt;
     private long age;
@@ -45,7 +46,7 @@ public class User {
     private Role role;
 
     @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @JsonIgnore
     private Profile profile;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -53,23 +54,21 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"), // User's foreign key
             inverseJoinColumns = @JoinColumn(name = "job_id") // Job's foreign key
     )
-    @JsonBackReference
+    @JsonIgnore
     private Set<Job> jobs;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @JsonIgnore
     private Company company;
-
 
     //////////////////////////////////////////////// 2024/12/11
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "user_acceptedJobs",  // Define a join table to map the relationship
-        joinColumns = @JoinColumn(name = "user_id"),  // User's foreign key
-        inverseJoinColumns = @JoinColumn(name = "job_id")  // Job's foreign key
+    @JoinTable(name = "user_acceptedJobs", // Define a join table to map the relationship
+            joinColumns = @JoinColumn(name = "user_id"), // User's foreign key
+            inverseJoinColumns = @JoinColumn(name = "job_id") // Job's foreign key
     )
-    @JsonBackReference
+    @JsonIgnore
     private Set<Job> acceptedJobs;
 
     public Set<Job> getAcceptedJobs() {
@@ -81,12 +80,11 @@ public class User {
     }
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "user_rejectedJobs",  // Define a join table to map the relationship
-        joinColumns = @JoinColumn(name = "user_id"),  // User's foreign key
-        inverseJoinColumns = @JoinColumn(name = "job_id")  // Job's foreign key
+    @JoinTable(name = "user_rejectedJobs", // Define a join table to map the relationship
+            joinColumns = @JoinColumn(name = "user_id"), // User's foreign key
+            inverseJoinColumns = @JoinColumn(name = "job_id") // Job's foreign key
     )
-    @JsonBackReference
+    @JsonIgnore
     private Set<Job> rejectedJobs;
 
     public Set<Job> getRejectedJobs() {
