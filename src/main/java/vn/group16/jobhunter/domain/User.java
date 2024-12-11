@@ -61,6 +61,43 @@ public class User {
     @JsonBackReference
     private Company company;
 
+    //////////////////////////////////////////////// 2024/12/11
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_acceptedJobs",  // Define a join table to map the relationship
+        joinColumns = @JoinColumn(name = "user_id"),  // User's foreign key
+        inverseJoinColumns = @JoinColumn(name = "job_id")  // Job's foreign key
+    )
+    @JsonBackReference
+    private Set<Job> acceptedJobs;
+
+    public Set<Job> getAcceptedJobs() {
+        return acceptedJobs;
+    }
+
+    public void setAcceptedJobs(Set<Job> acceptedJobs) {
+        this.acceptedJobs = acceptedJobs;
+    }
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_rejectedJobs",  // Define a join table to map the relationship
+        joinColumns = @JoinColumn(name = "user_id"),  // User's foreign key
+        inverseJoinColumns = @JoinColumn(name = "job_id")  // Job's foreign key
+    )
+    @JsonBackReference
+    private Set<Job> rejectedJobs;
+
+    public Set<Job> getRejectedJobs() {
+        return rejectedJobs;
+    }
+
+    public void setRejectedJobs(Set<Job> rejectedJobs) {
+        this.rejectedJobs = rejectedJobs;
+    }
+
+    ////////////////////////////////////////////////
 
     @Enumerated(EnumType.STRING)
 

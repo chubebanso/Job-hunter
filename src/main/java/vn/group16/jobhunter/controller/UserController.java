@@ -113,6 +113,49 @@ public class UserController {
         else return ResponseEntity.ok(this.userService.unapplyUserToJob(tempUser, tempJob));
     }
 
+    //////////////////////////////////////////////// 2024/12/11
+    @PutMapping("/users/{user_id}/add/jobs/{job_id}/accepted")
+    public ResponseEntity<User> userAddAccepted(
+        @PathVariable("user_id") long user_id,
+        @PathVariable("job_id") long job_id
+    ) throws IdInvalidException{
+        User tempUser = this.userService.getUserById(user_id);
+        Job tempJob = this.jobService.getJobById(job_id);
+        return ResponseEntity.ok(this.userService.userAddAccepted(tempUser, tempJob));
+    }
+
+    @PutMapping("/users/{user_id}/remove/jobs/{job_id}/accepted")
+    public ResponseEntity<User> userRemoveAccepted(
+        @PathVariable("user_id") long user_id,
+        @PathVariable("job_id") long job_id
+    ) throws IdInvalidException{
+        User tempUser = this.userService.getUserById(user_id);
+        Job tempJob = this.jobService.getJobById(job_id);
+        return ResponseEntity.ok(this.userService.userRemoveAccepted(tempUser, tempJob));
+    }
+
+    @PutMapping("/users/{user_id}/add/jobs/{job_id}/accepted")
+    public ResponseEntity<User> userAddRejected(
+        @PathVariable("user_id") long user_id,
+        @PathVariable("job_id") long job_id
+    ) throws IdInvalidException{
+        User tempUser = this.userService.getUserById(user_id);
+        Job tempJob = this.jobService.getJobById(job_id);
+        return ResponseEntity.ok(this.userService.userAddRejected(tempUser, tempJob));
+    }
+
+    @PutMapping("/users/{user_id}/add/jobs/{job_id}/accepted")
+    public ResponseEntity<User> userRemoveRejected(
+        @PathVariable("user_id") long user_id,
+        @PathVariable("job_id") long job_id
+    ) throws IdInvalidException{
+        User tempUser = this.userService.getUserById(user_id);
+        Job tempJob = this.jobService.getJobById(job_id);
+        return ResponseEntity.ok(this.userService.userRemoveRejected(tempUser, tempJob));
+    }
+
+    ////////////////////////////////////////////////
+
     @PutMapping("/users/{user_id}/add/companies/{company_id}")
     public ResponseEntity<User> addUserToCompany(
         @PathVariable("user_id") long user_id,
