@@ -44,23 +44,21 @@ public class User {
     @JsonProperty("role")
     private Role role;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Profile profile;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "user_jobs",  // Define a join table to map the relationship
-        joinColumns = @JoinColumn(name = "user_id"),  // User's foreign key
-        inverseJoinColumns = @JoinColumn(name = "job_id")  // Job's foreign key
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_jobs", // Define a join table to map the relationship
+            joinColumns = @JoinColumn(name = "user_id"), // User's foreign key
+            inverseJoinColumns = @JoinColumn(name = "job_id") // Job's foreign key
     )
     @JsonBackReference
     private Set<Job> jobs;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JsonBackReference
     private Company company;
-
 
     @Enumerated(EnumType.STRING)
 
@@ -159,7 +157,7 @@ public class User {
     public void setJob(Set<Job> job) {
         this.jobs = job;
     }
-    
+
     public Company getCompany() {
         return company;
     }

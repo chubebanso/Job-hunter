@@ -16,7 +16,7 @@ public class Profile {
     private long id;
 
     @Column(columnDefinition = "TEXT")
-    private String bio;  
+    private String bio;
     private String phoneNumber;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -28,11 +28,11 @@ public class Profile {
     @JsonIgnore
     private Set<Skill> skills; //sửa lại skill
 
-    private String profilePictureUrl; 
-    @JsonFormat(timezone = "UTC") 
-    private Instant dateOfBirth; 
+    private String profilePictureUrl;
+    @JsonFormat(timezone = "UTC")
+    private Instant dateOfBirth;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JsonBackReference
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;

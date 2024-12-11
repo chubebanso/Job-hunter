@@ -47,11 +47,11 @@ public class Company {
     private String updateBy;
 
     // One-to-many relationship with Job
-    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Job> jobs;
 
-    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<User> users;
 
