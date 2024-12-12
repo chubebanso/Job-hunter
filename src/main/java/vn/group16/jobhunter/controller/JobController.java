@@ -22,6 +22,7 @@ import jakarta.validation.Valid;
 import vn.group16.jobhunter.domain.Company;
 import vn.group16.jobhunter.domain.Job;
 import vn.group16.jobhunter.domain.ResultPaginationDTO;
+import vn.group16.jobhunter.domain.Skill;
 import vn.group16.jobhunter.domain.User;
 import vn.group16.jobhunter.service.CompanyService;
 import vn.group16.jobhunter.service.JobService;
@@ -56,6 +57,13 @@ public class JobController {
     public ResponseEntity<Job> getJobById(@PathVariable("job_id") long job_id) {
         Job job = this.jobService.getJobById(job_id);
         return ResponseEntity.ok(job);
+    }
+
+    //get job's skills
+    @GetMapping("/jobs/{job_id}/skills/get")
+    public ResponseEntity<List<Skill>> getJobSkillList(@PathVariable("job_id") long job_id){
+        Job job = this.jobService.getJobById(job_id);
+        return ResponseEntity.ok(job.getSkills());
     }
 
     @GetMapping("/jobs/{job_id}/applicantList")
