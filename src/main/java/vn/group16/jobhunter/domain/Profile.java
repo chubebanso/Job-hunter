@@ -2,12 +2,16 @@ package vn.group16.jobhunter.domain;
 
 import jakarta.persistence.*;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "profile")
@@ -23,11 +27,13 @@ public class Profile {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "profile_skill", joinColumns = @JoinColumn(name = "profile_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
     @JsonIgnore
-    private List<Skill> skills; // sửa lại skill
+    private List<Skill> skills;
 
     private String profilePictureUrl;
-    @JsonFormat(timezone = "UTC")
-    private Instant dateOfBirth;
+
+    // Change to LocalDate to represent only the date in "yyyy-MM-dd" format
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
+    private LocalDate dateOfBirth;
 
     @OneToOne(fetch = FetchType.EAGER)
     @JsonIgnore
@@ -59,11 +65,11 @@ public class Profile {
         this.profilePictureUrl = profilePictureUrl;
     }
 
-    public Instant getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Instant dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
