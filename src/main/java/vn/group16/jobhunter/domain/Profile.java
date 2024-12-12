@@ -2,6 +2,7 @@ package vn.group16.jobhunter.domain;
 
 import jakarta.persistence.*;
 import java.time.Instant;
+import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -20,13 +21,9 @@ public class Profile {
     private String phoneNumber;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "profile_skill",  
-        joinColumns = @JoinColumn(name = "profile_id"),  
-        inverseJoinColumns = @JoinColumn(name = "skill_id")  
-    )
+    @JoinTable(name = "profile_skill", joinColumns = @JoinColumn(name = "profile_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
     @JsonIgnore
-    private Set<Skill> skills; //sửa lại skill
+    private List<Skill> skills; // sửa lại skill
 
     private String profilePictureUrl;
     @JsonFormat(timezone = "UTC")
@@ -86,11 +83,11 @@ public class Profile {
         this.phoneNumber = phoneNumber;
     }
 
-    public Set<Skill> getSkills() {
+    public List<Skill> getSkills() {
         return skills;
     }
 
-    public void setSkills(Set<Skill> skills) {
+    public void setSkills(List<Skill> skills) {
         this.skills = skills;
     }
 }

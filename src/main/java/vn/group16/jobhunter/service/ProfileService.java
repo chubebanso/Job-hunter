@@ -2,6 +2,7 @@ package vn.group16.jobhunter.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,18 +15,29 @@ import vn.group16.jobhunter.domain.ResultPaginationDTO;
 import vn.group16.jobhunter.domain.Skill;
 import vn.group16.jobhunter.domain.User;
 import vn.group16.jobhunter.repository.ProfileRepository;
+import vn.group16.jobhunter.repository.SkillRepository;
 
 @Service
 public class ProfileService {
     final private ProfileRepository profileRepository;
+    final private SkillRepository skillRepository;
 
     public ProfileService(
-        ProfileRepository profileRepository){
+            ProfileRepository profileRepository, SkillRepository skillRepository) {
         this.profileRepository = profileRepository;
+        this.skillRepository = skillRepository;
     }
 
-    public Profile createProfile(Profile profile, User user){
+    public Profile createProfile(Profile profile, User user) {
         profile.setUser(user);
+        if (profile.getSkills() != null) {
+            List<Long> skillId = profile.getSkills().stream()
+                    .map(Skill::getId)
+                    .collect(Collectors.toList());
+            // Dùng findByIdIn để tìm các Permission từ danh sách rolePermission
+            List<Skill> skills = this.skillRepository.findByIdIn(skillId);
+            profile.setSkills(skills);
+        }
         return this.profileRepository.save(profile);
     }
 
@@ -75,13 +87,13 @@ public class ProfileService {
         this.profileRepository.deleteById(profile_id);
     }
 
-    public Profile addSkillToProfile(Profile profile, Skill skill){
+    public Profile addSkillToProfile(Profile profile, Skill skill) {
         profile.getSkills().add(skill);
         skill.getProfile().add(profile);
         return this.profileRepository.save(profile);
     }
 
-    public Profile removeSkillToProfile(Profile profile, Skill skill){
+    public Profile removeSkillToProfile(Profile profile, Skill skill) {
         profile.getSkills().remove(skill);
         skill.getProfile().remove(profile);
         return this.profileRepository.save(profile);

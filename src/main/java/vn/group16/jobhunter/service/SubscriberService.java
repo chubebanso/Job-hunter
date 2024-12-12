@@ -35,11 +35,8 @@ public class SubscriberService {
             List<Long> skillId = subscriber.getSkills().stream()
                     .map(Skill::getId)
                     .collect(Collectors.toList());
-
-            // Dùng findByIdIn để tìm các Permission từ danh sách rolePermission
             List<Skill> skills = this.skillRepository.findByIdIn(skillId);
             subscriber.setSkills(skills);
-            ;
         }
         return this.subscriberRepository.save(subscriber);
     }
