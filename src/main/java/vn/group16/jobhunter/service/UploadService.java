@@ -24,27 +24,36 @@ public class UploadService {
     }
 
     public String handleSaveUploadFile(MultipartFile file, String targetFolder) {
-        // String rootPath = servletContext.getRealPath("");
+        // Lấy đường dẫn tuyệt đối từ `uploadDir`
         String rootPath = Paths.get(uploadDir).toAbsolutePath().toString();
-        String finalName = "";
+        String finalName = ""; // Chỉ lưu tên file
+
         try {
+            // Đọc bytes từ file
             byte[] bytes = file.getBytes();
 
+            // Tạo thư mục nếu chưa tồn tại
             File dir = new File(rootPath + File.separator + targetFolder);
             if (!dir.exists()) {
                 dir.mkdirs();
             }
-            finalName = File.separator + file.getOriginalFilename();
-            File serlverFile = new File(dir.getAbsolutePath() + finalName);
 
-            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serlverFile));
-            stream.write(bytes);
-            stream.close();
+            // Lấy tên file gốc
+            finalName = file.getOriginalFilename();
 
+            // Tạo file với đường dẫn đầy đủ
+            File serverFile = new File(dir, finalName);
+
+            // Ghi dữ liệu file vào hệ thống
+            try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile))) {
+                stream.write(bytes);
+            }
         } catch (IOException e) {
-            // TODO: handle exception
             e.printStackTrace();
         }
-        return finalName + rootPath;
+
+        // Chỉ trả về tên file
+        return finalName;
     }
+
 }

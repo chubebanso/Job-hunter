@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Avatar, AvatarImage } from '../ui/avatar';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Dialog, DialogTrigger, DialogContent } from '../ui/dialog';
-import { Edit2, MoreHorizontal } from 'lucide-react';
+import { Edit, Trash } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'sonner';
 
 const CompaniesTable = () => {
     const [filterCompany, setFilterCompany] = useState([]); // Dữ liệu danh sách công ty
@@ -17,6 +17,7 @@ const CompaniesTable = () => {
     const [logo, setLogo] = useState(null); // Lưu trữ file logo
     const [website, setWebsite] = useState('');
     const navigate = useNavigate();
+    const accessToken = localStorage.getItem("accessToken");
 
     // Lấy danh sách công ty
     useEffect(() => {
@@ -24,16 +25,16 @@ const CompaniesTable = () => {
     }, []);
 
     const fetchCompanies = async () => {
-        const token = localStorage.getItem('accessToken'); // Lấy token từ local storage
         try {
-            const response = await axios.get('http://localhost:8080/api/v1/companies', {
+            const response = await axios.get('http://localhost:8080/api/v1/companies/all', {
                 headers: {
-                    Authorization: `Bearer ${token}`, // Đính kèm token vào headers
+                    Authorization: `Bearer ${accessToken}`,
                 },
             });
-            setFilterCompany(response.data); // Cập nhật danh sách công ty
+            setFilterCompany(response.data.data); // Giả sử dữ liệu trong thuộc tính 'data'
         } catch (error) {
             console.error('Lỗi khi lấy danh sách công ty:', error);
+            alert('Có lỗi xảy ra khi lấy danh sách công ty. Vui lòng thử lại sau.');
         }
     };
 
@@ -58,19 +59,17 @@ const CompaniesTable = () => {
             const uploadResponse = await axios.post('http://localhost:8080/api/v1/upload?imageFile', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${token}`, // Đính kèm token
+                    Authorization: `Bearer ${token}`,
                 },
             });
 
-            // Lấy tên file từ phản hồi API
             const uploadedLogoName = uploadResponse.data;
-
             if (!uploadedLogoName) {
                 alert('Lỗi tải lên logo. Vui lòng thử lại.');
                 return;
             }
 
-            // Bước 2: Gửi yêu cầu tạo công ty với tên tệp logo
+            // Bước 2: Gửi yêu cầu tạo công ty
             const companyData = {
                 name,
                 description,
@@ -81,7 +80,7 @@ const CompaniesTable = () => {
 
             const createResponse = await axios.post('http://localhost:8080/api/v1/companies/create', companyData, {
                 headers: {
-                    Authorization: `Bearer ${token}`, // Đính kèm token
+                    Authorization: `Bearer ${token}`,
                 },
             });
 
@@ -100,6 +99,28 @@ const CompaniesTable = () => {
         } catch (error) {
             console.error('Lỗi khi tạo công ty:', error);
             alert('Tạo công ty thất bại. Vui lòng thử lại.');
+        }
+    };
+
+    // Hàm xử lý xóa công ty
+    const handleDelete = async (id) => {
+        try {
+            const res = await axios.delete(`http://localhost:8080/api/v1/companies/delete/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            if (res.data="Delete Company Success") {
+                // Cập nhật lại danh sách công ty sau khi xóa thành công
+                setFilterCompany((prevCompanies) => prevCompanies.filter((company) => company.id !== id));
+                toast.message('Công ty đã được xóa thành công!');
+            } else {
+                alert('Xóa công ty không thành công!');
+            }
+        } catch (error) {
+            console.error('Lỗi khi xóa công ty:', error);
+            alert('Có lỗi xảy ra khi xóa công ty. Vui lòng thử lại!');
         }
     };
 
@@ -183,36 +204,49 @@ const CompaniesTable = () => {
                         <TableHead>Logo</TableHead>
                         <TableHead>Tên</TableHead>
                         <TableHead>Ngày tạo</TableHead>
-                        <TableHead className="text-right">Hành động</TableHead>
+                        <TableHead>Website</TableHead>
+                        <TableHead>Description</TableHead>
+                        <TableHead>Address</TableHead>
+                        <TableHead className="text-right">Action</TableHead>
                     </TableRow>
                 </TableHeader>
-                <TableBody>
-                    {filterCompany?.map((company) => (
-                        <TableRow key={company.id}>
-                            <TableCell>
-                                <Avatar>
-                                    <AvatarImage src={company.logo} />
-                                </Avatar>
-                            </TableCell>
-                            <TableCell>{company.name}</TableCell>
-                            <TableCell>{company.createdAt.split("T")[0]}</TableCell>
-                            <TableCell className="text-right cursor-pointer">
-                                <Popover>
-                                    <PopoverTrigger><MoreHorizontal /></PopoverTrigger>
-                                    <PopoverContent className="w-32">
-                                        <div
-                                            onClick={() => navigate(`/admin/companies/${company.id}`)}
-                                            className="flex items-center gap-2 w-fit cursor-pointer"
-                                        >
-                                            <Edit2 className="w-4" />
-                                            <span>Sửa</span>
-                                        </div>
-                                    </PopoverContent>
-                                </Popover>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
+              <TableBody>
+    {filterCompany?.map((company) => (
+        <TableRow key={company.id}>
+            <TableCell>
+                {/* Sử dụng <img> để hiển thị ảnh trực tiếp */}
+                <img
+                    src={`/avatars/${company.logo}`}
+                    alt={`Logo of ${company.name}`}
+                    style={{ width: '50px', height: '50px', objectFit: 'cover' }} // Tuỳ chỉnh kích thước
+                    // onError={(e) => {
+                    //     e.target.src = '/assets/avatars/default-logo.png'; // Ảnh mặc định nếu không tìm thấy ảnh
+                    // }}
+                />
+            </TableCell>
+            <TableCell>{company.name}</TableCell>
+            <TableCell>{company.createdAt.split('T')[0]}</TableCell>
+            <TableCell>{company.website}</TableCell>
+            <TableCell>{company.description}</TableCell>
+            <TableCell>{company.address}</TableCell>
+            <TableCell className="text-right cursor-pointer">
+                <div className="flex gap-2 justify-end">
+                    <Edit
+                        className="cursor-pointer text-blue-500 hover:text-blue-700"
+                        size={20}
+                        onClick={() => navigate(`/edit-company/${company.id}`)} // Chuyển hướng tới trang chỉnh sửa công ty
+                    />
+                    <Trash
+                        className="cursor-pointer text-red-500 hover:text-red-700"
+                        size={20}
+                        onClick={() => handleDelete(company.id)} // Gọi hàm xóa khi click
+                    />
+                </div>
+            </TableCell>
+        </TableRow>
+    ))}
+</TableBody>
+
             </Table>
         </div>
     );

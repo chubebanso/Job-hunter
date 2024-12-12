@@ -47,7 +47,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         authz -> authz
                                 .requestMatchers("/", "/api/v1/login", "/api/v1/auth/refresh", "/api/v1/email",
-                                        "/api/v1/auth/logout")
+                                        "/api/v1/auth/logout", "/api/v1/users/create")
                                 .permitAll()
                                 .anyRequest().authenticated())
                 .oauth2ResourceServer(
