@@ -51,6 +51,15 @@ public class Company {
     @OneToMany(mappedBy = "company", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Job> jobs;
+    private long jobCnt;
+
+    public long getJobCnt() {
+        return jobCnt;
+    }
+
+    public void setJobCnt(long jobCnt) {
+        this.jobCnt = jobCnt;
+    }
 
     @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
     @JsonIgnore
