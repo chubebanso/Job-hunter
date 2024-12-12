@@ -52,6 +52,9 @@ public class CompanyController {
     @APIMessage("fetch all companies without pagination")
     public ResponseEntity<List<Company>> getAllCompanies() {
         List<Company> companies = this.companyService.getAllCompanies();
+        for(Company company : companies){
+            company.setJobCnt(company.getJobs().size());
+        }
         return ResponseEntity.ok(companies);
     }
 

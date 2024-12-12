@@ -39,7 +39,7 @@ public class CompanyService {
         return null;
     }
 
-    public Company getCompanyByName(String name){
+    public Company getCompanyByName(String name) {
         Company companyOptional = this.companyRepository.findByName(name);
         return companyOptional;
     }
