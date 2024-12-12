@@ -3,10 +3,15 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Edit, Trash } from 'lucide-react'; // Import các icon Edit và Trash
 import { toast } from 'sonner';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 const ApplicantsTable = () => {
     const [data, setData] = useState([]); // State để lưu danh sách ứng viên
     const [loading, setLoading] = useState(true); // State để hiển thị trạng thái tải dữ liệu
+    const [selectedUser, setSelectedUser] = useState(null); // State để lưu thông tin ứng viên được chọn
+    const [isModalOpen, setIsModalOpen] = useState(false); // State để điều khiển hiển thị modal
+    const navigate = useNavigate();
 
     // Lấy accessToken từ localStorage
     const accessToken = localStorage.getItem("accessToken");
@@ -40,10 +45,49 @@ const ApplicantsTable = () => {
         fetchApplicants();
     }, []);
 
-    // Hàm xử lý cập nhật ứng viên
-    const handleUpdate = (id) => {
-        // Thực hiện logic cập nhật (hiển thị form hoặc điều hướng tới trang cập nhật)
-        toast.info(`Cập nhật thông tin ứng viên với ID: ${id}`);
+    // Hàm xử lý mở modal chỉnh sửa
+    const handleEdit = (user) => {
+        setSelectedUser(user); // Lưu thông tin người dùng được chọn
+        setIsModalOpen(true); // Mở modal
+    };
+
+    // Hàm xử lý cập nhật thông tin người dùng
+    const handleSave = async (id) => {
+        try {
+            const response = await axios.put(
+                `http://localhost:8080/api/v1/users/update/${id}`,
+                {
+                    name: selectedUser.name,
+                    email: selectedUser.email,
+                    age: selectedUser.age,
+                    gender: selectedUser.gender
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    },
+                    withCredentials: true
+                }
+            );
+    
+            if (response.data.success) {
+                toast.success("Cập nhật thông tin thành công.");
+                setIsModalOpen(false); // Đóng modal
+                navigate(`/admin/:id/applicants`);
+                window.location.reload();
+                
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(error.response?.data?.message || "Lỗi khi cập nhật thông tin.");
+        }
+    };
+    
+
+    // Hàm xử lý đóng modal
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedUser(null);
     };
 
     // Hàm xử lý xóa ứng viên
@@ -99,7 +143,7 @@ const ApplicantsTable = () => {
                                         <Edit
                                             className="cursor-pointer text-blue-500 hover:text-blue-700"
                                             size={20}
-                                            onClick={() => handleUpdate(item.id)} // Gọi hàm handleUpdate
+                                            onClick={() => handleEdit(item)} // Gọi hàm handleEdit
                                         />
                                         {/* Icon Delete */}
                                         <Trash
@@ -114,6 +158,65 @@ const ApplicantsTable = () => {
                     }
                 </TableBody>
             </Table>
+
+            {isModalOpen && (
+                <div className="modal fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+                    <div className="bg-white p-6 rounded shadow-lg w-1/3">
+                        <h2 className="text-lg font-semibold mb-4">Edit User</h2>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700">Name</label>
+                            <input
+                                type="text"
+                                value={selectedUser?.name || ''}
+                                onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value })}
+                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700">Email</label>
+                            <input
+                                type="email"
+                                value={selectedUser?.email || ''}
+                                onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value })}
+                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700">Age</label>
+                            <input
+                                type="number"
+                                value={selectedUser?.age || ''}
+                                onChange={(e) => setSelectedUser({ ...selectedUser, age: e.target.value })}
+                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700">Gender</label>
+                            <input
+                                type="text"
+                                value={selectedUser?.gender || ''}
+                                onChange={(e) => setSelectedUser({ ...selectedUser, gender: e.target.value })}
+                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                            />
+                        </div>
+                        <div className="flex justify-end gap-4">
+                            <button
+                                onClick={handleCloseModal}
+                                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={() => handleSave(selectedUser.id)}
+                                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                            >
+                                Save
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
