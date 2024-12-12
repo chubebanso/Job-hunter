@@ -11,7 +11,8 @@ import AdminJobs from "./components/admin/AdminJobs"
 import PostJob from './components/admin/PostJob'
 import Applicants from './components/admin/Applicants'
 import ApplicantsCreate from './components/admin/ApplicantsCreate'
-
+import AdminMain from './components/admin/AdminMain'
+import ApplicantsList from './components/admin/Applicantlist'
 
 // Loại bỏ ProtectedRoute khỏi import
 
@@ -68,8 +69,11 @@ const appRouter = createBrowserRouter([
     path: "/admin/applicants/create",
     element: <ApplicantsCreate/>
   },
- 
-  
+ {
+  path: "/admin/companies/:id/applicants",
+  element: <ApplicantsList />
+},
+
 ])
 
 function App() {

@@ -10,6 +10,7 @@ const JobDescription = () => {
     const [jobs, setJobs] = useState([]); // Danh sách công việc
     const [loading, setLoading] = useState(true); // Trạng thái tải
     const [error, setError] = useState(null); // Trạng thái lỗi
+    const [appliedJobs, setAppliedJobs] = useState(new Set()); // Lưu các công việc đã apply
     const params = useParams();
     const companyId = params.id; // Lấy ID công ty từ URL
 
@@ -56,6 +57,38 @@ const JobDescription = () => {
         fetchCompanyAndJobs(); // Gọi API khi component được mount
     }, [companyId]);
 
+    const handleApply = async (jobId) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const profileId = 4; // Giả sử profileId là 4 (bạn có thể thay thế theo thực tế)
+
+            if (!accessToken) {
+                throw new Error('Access token not found. Please log in again.');
+            }
+
+            // Gửi yêu cầu apply công việc
+            const response = await axios.post(
+                `http://localhost:8080/api/v1/${jobId}/apply`,
+                { profileId },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
+
+            if (response.data="Profile successfully applied to the job") {
+                // Cập nhật trạng thái công việc đã apply
+                setAppliedJobs((prev) => new Set(prev.add(jobId)));
+            } else {
+                throw new Error('Failed to apply for the job.');
+            }
+        } catch (err) {
+            console.error('Error applying for job:', err);
+            setError('An error occurred while applying for the job.');
+        }
+    };
+
     if (loading) {
         return <div>Loading data...</div>; // Hiển thị trạng thái tải
     }
@@ -66,10 +99,10 @@ const JobDescription = () => {
 
     return (
         <div>
-            <div className='max-w-7xl mx-auto my-10 grid grid-cols-1 md:grid-cols-2 gap-10'>
+            <div className="max-w-7xl mx-auto my-10 grid grid-cols-1 md:grid-cols-2 gap-10">
                 {/* Left Column: Company Details */}
-                <div className='p-6 bg-white rounded-lg shadow-md border'>
-                    <div className='flex items-center gap-4 mb-6'>
+                <div className="p-6 bg-white rounded-lg shadow-md border">
+                    <div className="flex items-center gap-4 mb-6">
                         {/* Logo */}
                         {company?.logo && (
                             <img
@@ -80,8 +113,10 @@ const JobDescription = () => {
                         )}
                         {/* Tên công ty */}
                         <div>
-                            <h1 className='text-3xl font-bold text-gray-800'>{company?.name || 'Company Name'}</h1>
-                            <p className='text-gray-600 text-sm'>{company?.address || 'Not specified'}</p>
+                            <h1 className="text-3xl font-bold text-gray-800">
+                                {company?.name || 'Company Name'}
+                            </h1>
+                            <p className="text-gray-600 text-sm">{company?.address || 'Not specified'}</p>
                         </div>
                     </div>
 
@@ -111,46 +146,57 @@ const JobDescription = () => {
                 <div>
                     {jobs.length > 0 ? (
                         jobs.map((job) => (
-                            <div key={job.id} className='p-6 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg shadow-lg border mb-6'>
-                                <h1 className='font-bold text-2xl mb-6 text-purple-900'>{job.name || 'Job Title'}</h1>
-                                <div className='mb-6'>
-                                    <h2 className='font-semibold text-lg text-gray-700'>Description:</h2>
-                                    <p className='text-gray-600'>{job.description || 'No description provided'}</p>
+                            <div
+                                key={job.id}
+                                className="p-6 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg shadow-lg border mb-6"
+                            >
+                                <h1 className="font-bold text-2xl mb-6 text-purple-900">
+                                    {job.name || 'Job Title'}
+                                </h1>
+                                <div className="mb-6">
+                                    <h2 className="font-semibold text-lg text-gray-700">Description:</h2>
+                                    <p className="text-gray-600">{job.description || 'No description provided'}</p>
                                 </div>
-                                <div className='mb-6'>
-                                    <h2 className='font-semibold text-lg text-gray-700'>Salary:</h2>
-                                    <p className='text-gray-600'>{job.salary || 'Not specified'}</p>
+                                <div className="mb-6">
+                                    <h2 className="font-semibold text-lg text-gray-700">Salary:</h2>
+                                    <p className="text-gray-600">{job.salary || 'Not specified'}</p>
                                 </div>
-                                <div className='mb-6'>
-                                    <h2 className='font-semibold text-lg text-gray-700'>Location:</h2>
-                                    <p className='text-gray-600'>{job.location || 'Not specified'}</p>
+                                <div className="mb-6">
+                                    <h2 className="font-semibold text-lg text-gray-700">Location:</h2>
+                                    <p className="text-gray-600">{job.location || 'Not specified'}</p>
                                 </div>
-                                <div className='mb-6'>
-                                    <h2 className='font-semibold text-lg text-gray-700'>Job Type:</h2>
-                                    <p className='text-gray-600'>{job.jobType || 'Not specified'}</p>
+                                <div className="mb-6">
+                                    <h2 className="font-semibold text-lg text-gray-700">Job Type:</h2>
+                                    <p className="text-gray-600">{job.jobType || 'Not specified'}</p>
                                 </div>
-                                <div className='mb-6'>
-                                    <h2 className='font-semibold text-lg text-gray-700'>Experience:</h2>
-                                    <p className='text-gray-600'>{job.experience || 'Not specified'} years</p>
+                                <div className="mb-6">
+                                    <h2 className="font-semibold text-lg text-gray-700">Experience:</h2>
+                                    <p className="text-gray-600">{job.experience || 'Not specified'} years</p>
                                 </div>
-                                <div className='mb-6'>
-                                    <h2 className='font-semibold text-lg text-gray-700'>Position:</h2>
-                                    <p className='text-gray-600'>{job.position || 'Not specified'}</p>
+                                <div className="mb-6">
+                                    <h2 className="font-semibold text-lg text-gray-700">Position:</h2>
+                                    <p className="text-gray-600">{job.position || 'Not specified'}</p>
                                 </div>
 
                                 {/* Skills */}
-                                <div className='flex flex-wrap gap-4 mb-6'>
+                                <div className="flex flex-wrap gap-4 mb-6">
                                     {job.skills.map((skill) => (
                                         <Badge
                                             key={skill.id}
-                                            className='bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold'
+                                            className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold"
                                         >
                                             {skill.name}
                                         </Badge>
                                     ))}
                                 </div>
-                                <Button className='rounded-lg w-full py-3 font-semibold bg-purple-700 text-white hover:bg-purple-800'>
-                                    Apply Now
+
+                                {/* Apply Button */}
+                                <Button
+                                    className="rounded-lg w-full py-3 font-semibold bg-purple-700 text-white hover:bg-purple-800"
+                                    onClick={() => handleApply(job.id)}
+                                    disabled={appliedJobs.has(job.id)} // Disable if already applied
+                                >
+                                    {appliedJobs.has(job.id) ? 'Applied' : 'Apply Now'}
                                 </Button>
                             </div>
                         ))

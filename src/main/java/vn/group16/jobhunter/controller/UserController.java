@@ -7,6 +7,7 @@ import vn.group16.jobhunter.domain.Job;
 import vn.group16.jobhunter.domain.ResultPaginationDTO;
 import vn.group16.jobhunter.domain.User;
 import vn.group16.jobhunter.dto.CreateUserDTO;
+import vn.group16.jobhunter.repository.JobRepository;
 import vn.group16.jobhunter.service.CompanyService;
 import vn.group16.jobhunter.service.JobService;
 import vn.group16.jobhunter.service.UserService;
@@ -42,16 +43,19 @@ public class UserController {
     final private JobService jobService;
     final private CompanyService companyService;
     final private PasswordEncoder passwordEncoder;
+    final private JobRepository jobRepository;
 
     public UserController(
-        UserService userService,
-        JobService jobService, 
-        CompanyService companyService,
-        PasswordEncoder passwordEncoder) {
+            UserService userService,
+            JobService jobService,
+            CompanyService companyService,
+            PasswordEncoder passwordEncoder,
+            JobRepository jobRepository) {
         this.userService = userService;
         this.jobService = jobService;
         this.companyService = companyService;
         this.passwordEncoder = passwordEncoder;
+        this.jobRepository = jobRepository;
     }
 
     @PostMapping("/users/create")
@@ -64,8 +68,6 @@ public class UserController {
         User user = this.userService.handleCreateUser(postmanUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
-
-
 
     @DeleteMapping("/users/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") long id) throws IdInvalidException {
@@ -98,38 +100,39 @@ public class UserController {
 
     @PutMapping("/users/update/{user_id}")
     public ResponseEntity<User> updateUser(
-        @Valid @RequestBody User userUpdate, @PathVariable("user_id") long user_id) {
+            @Valid @RequestBody User userUpdate, @PathVariable("user_id") long user_id) {
         return ResponseEntity.ok(this.userService.handleUpdateUser(userUpdate, user_id));
     }
 
     @PutMapping("/users/{user_id}/add/jobs/{job_id}")
     public ResponseEntity<User> applyUser(
-        @PathVariable("user_id") long user_id,
-        @PathVariable("job_id") long job_id
-    ) throws IdInvalidException{
+            @PathVariable("user_id") long user_id,
+            @PathVariable("job_id") long job_id) throws IdInvalidException {
         User tempUser = this.userService.getUserById(user_id);
         Job tempJob = this.jobService.getJobById(job_id);
-        if(tempUser == null || tempJob == null) throw new IdInvalidException("Cannot find user/job.");
-        else return ResponseEntity.ok(this.userService.applyUserToJob(tempUser, tempJob));
+        if (tempUser == null || tempJob == null)
+            throw new IdInvalidException("Cannot find user/job.");
+        else
+            return ResponseEntity.ok(this.userService.applyUserToJob(tempUser, tempJob));
     }
 
     @PutMapping("/users/{user_id}/remove/jobs/{job_id}")
     public ResponseEntity<User> unapplyUser(
-        @PathVariable("user_id") long user_id,
-        @PathVariable("job_id") long job_id
-    ) throws IdInvalidException{
+            @PathVariable("user_id") long user_id,
+            @PathVariable("job_id") long job_id) throws IdInvalidException {
         User tempUser = this.userService.getUserById(user_id);
         Job tempJob = this.jobService.getJobById(job_id);
-        if(tempUser == null || tempJob == null) throw new IdInvalidException("Cannot find user/job.");
-        else return ResponseEntity.ok(this.userService.unapplyUserToJob(tempUser, tempJob));
+        if (tempUser == null || tempJob == null)
+            throw new IdInvalidException("Cannot find user/job.");
+        else
+            return ResponseEntity.ok(this.userService.unapplyUserToJob(tempUser, tempJob));
     }
 
     //////////////////////////////////////////////// 2024/12/11
     @PutMapping("/users/{user_id}/add/jobs/{job_id}/accepted")
     public ResponseEntity<User> userAddAccepted(
-        @PathVariable("user_id") long user_id,
-        @PathVariable("job_id") long job_id
-    ) throws IdInvalidException{
+            @PathVariable("user_id") long user_id,
+            @PathVariable("job_id") long job_id) throws IdInvalidException {
         User tempUser = this.userService.getUserById(user_id);
         Job tempJob = this.jobService.getJobById(job_id);
         return ResponseEntity.ok(this.userService.userAddAccepted(tempUser, tempJob));
@@ -137,9 +140,8 @@ public class UserController {
 
     @PutMapping("/users/{user_id}/remove/jobs/{job_id}/accepted")
     public ResponseEntity<User> userRemoveAccepted(
-        @PathVariable("user_id") long user_id,
-        @PathVariable("job_id") long job_id
-    ) throws IdInvalidException{
+            @PathVariable("user_id") long user_id,
+            @PathVariable("job_id") long job_id) throws IdInvalidException {
         User tempUser = this.userService.getUserById(user_id);
         Job tempJob = this.jobService.getJobById(job_id);
         return ResponseEntity.ok(this.userService.userRemoveAccepted(tempUser, tempJob));
@@ -147,9 +149,8 @@ public class UserController {
 
     @PutMapping("/users/{user_id}/add/jobs/{job_id}/rejected")
     public ResponseEntity<User> userAddRejected(
-        @PathVariable("user_id") long user_id,
-        @PathVariable("job_id") long job_id
-    ) throws IdInvalidException{
+            @PathVariable("user_id") long user_id,
+            @PathVariable("job_id") long job_id) throws IdInvalidException {
         User tempUser = this.userService.getUserById(user_id);
         Job tempJob = this.jobService.getJobById(job_id);
         return ResponseEntity.ok(this.userService.userAddRejected(tempUser, tempJob));
@@ -157,9 +158,8 @@ public class UserController {
 
     @PutMapping("/users/{user_id}/remove/jobs/{job_id}/rejected")
     public ResponseEntity<User> userRemoveRejected(
-        @PathVariable("user_id") long user_id,
-        @PathVariable("job_id") long job_id
-    ) throws IdInvalidException{
+            @PathVariable("user_id") long user_id,
+            @PathVariable("job_id") long job_id) throws IdInvalidException {
         User tempUser = this.userService.getUserById(user_id);
         Job tempJob = this.jobService.getJobById(job_id);
         return ResponseEntity.ok(this.userService.userRemoveRejected(tempUser, tempJob));
@@ -169,45 +169,84 @@ public class UserController {
 
     @PutMapping("/users/{user_id}/add/companies/{company_id}")
     public ResponseEntity<User> addUserToCompany(
-        @PathVariable("user_id") long user_id,
-        @PathVariable("company_id") long company_id
-    ) throws IdInvalidException{
+            @PathVariable("user_id") long user_id,
+            @PathVariable("company_id") long company_id) throws IdInvalidException {
         User tempUser = this.userService.getUserById(user_id);
         Company tempCompany = this.companyService.getCompanyById(company_id);
-        if(tempUser == null || tempCompany == null) throw new IdInvalidException("Cannot find user/job.");
-        else return ResponseEntity.ok(this.userService.addUserToCompany(tempUser, tempCompany));
+        if (tempUser == null || tempCompany == null)
+            throw new IdInvalidException("Cannot find user/job.");
+        else
+            return ResponseEntity.ok(this.userService.addUserToCompany(tempUser, tempCompany));
     }
-    
+
     @PutMapping("/users/{user_id}/remove/companies/{company_id}")
     public ResponseEntity<User> removeUserFromCompany(
-        @PathVariable("user_id") long user_id,
-        @PathVariable("company_id") long company_id
-    ) throws IdInvalidException{
+            @PathVariable("user_id") long user_id,
+            @PathVariable("company_id") long company_id) throws IdInvalidException {
         User tempUser = this.userService.getUserById(user_id);
         Company tempCompany = this.companyService.getCompanyById(company_id);
-        if(tempUser == null || tempCompany == null) throw new IdInvalidException("Cannot find user/job.");
-        else return ResponseEntity.ok(this.userService.removeUserFromCompany(tempUser, tempCompany));
+        if (tempUser == null || tempCompany == null)
+            throw new IdInvalidException("Cannot find user/job.");
+        else
+            return ResponseEntity.ok(this.userService.removeUserFromCompany(tempUser, tempCompany));
     }
 
     @PutMapping("/users/{user_id}/add/companies/name/{company_name}")
     public ResponseEntity<User> addUserToCompanyByName(
-        @PathVariable("user_id") long user_id,
-        @PathVariable("company_name") String company_name
-    ) throws IdInvalidException{
+            @PathVariable("user_id") long user_id,
+            @PathVariable("company_name") String company_name) throws IdInvalidException {
         User tempUser = this.userService.getUserById(user_id);
         Company tempCompany = this.companyService.getCompanyByName(company_name);
-        if(tempUser == null || tempCompany == null) throw new IdInvalidException("Cannot find user/job.");
-        else return ResponseEntity.ok(this.userService.addUserToCompany(tempUser, tempCompany));
+        if (tempUser == null || tempCompany == null)
+            throw new IdInvalidException("Cannot find user/job.");
+        else
+            return ResponseEntity.ok(this.userService.addUserToCompany(tempUser, tempCompany));
     }
-    
+
     @PutMapping("/users/{user_id}/remove/companies/name/{company_name}")
     public ResponseEntity<User> removeUserFromCompanyByName(
-        @PathVariable("user_id") long user_id,
-        @PathVariable("company_name") String company_name
-    ) throws IdInvalidException{
+            @PathVariable("user_id") long user_id,
+            @PathVariable("company_name") String company_name) throws IdInvalidException {
         User tempUser = this.userService.getUserById(user_id);
         Company tempCompany = this.companyService.getCompanyByName(company_name);
-        if(tempUser == null || tempCompany == null) throw new IdInvalidException("Cannot find user/job.");
-        else return ResponseEntity.ok(this.userService.removeUserFromCompany(tempUser, tempCompany));
+        if (tempUser == null || tempCompany == null)
+            throw new IdInvalidException("Cannot find user/job.");
+        else
+            return ResponseEntity.ok(this.userService.removeUserFromCompany(tempUser, tempCompany));
     }
+
+    @GetMapping("/users/{userId}/accepted-jobs")
+    public ResponseEntity<?> getAcceptedJobsForUser(@PathVariable("userId") Long userId) {
+        User user = userService.getUserById(userId); // Lấy thông tin user từ service
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        // Lấy danh sách các công việc được accepted từ user
+        List<Job> acceptedJobs = user.getAcceptedJobs().stream().toList();
+
+        return ResponseEntity.ok(acceptedJobs);
+    }
+
+    @PutMapping("/users/{userId}/accept-job/{jobId}")
+    public ResponseEntity<?> acceptJob(@PathVariable("userId") Long userId, @PathVariable("jobId") Long jobId) {
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        Set<Job> acceptedJobs = user.getAcceptedJobs();
+
+        for (Job job : acceptedJobs) {
+            if (!Long.valueOf(job.getId()).equals(jobId)) {
+                job.setStatus("rejected");
+            } else {
+                job.setStatus("accepted");
+            }
+        }
+
+        jobRepository.saveAll(acceptedJobs); // Lưu tất cả thay đổi
+        return ResponseEntity.ok("Job accepted successfully");
+    }
+
 }
