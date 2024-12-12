@@ -11,7 +11,6 @@ import AdminJobs from "./components/admin/AdminJobs"
 import PostJob from './components/admin/PostJob'
 import Applicants from './components/admin/Applicants'
 import ApplicantsCreate from './components/admin/ApplicantsCreate'
-import AdminMain from './components/admin/AdminMain'
 
 
 // Loại bỏ ProtectedRoute khỏi import
