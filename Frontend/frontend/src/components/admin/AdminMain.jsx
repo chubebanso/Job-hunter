@@ -20,12 +20,6 @@ const AdminMain = () => {
                 >
                     User
                 </button>
-                <button
-                    onClick={() => navigate('/admin/jobs')}
-                    className="px-6 py-3 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75"
-                >
-                    Jobs
-                </button>
             </div>
         </div>
     );

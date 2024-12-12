@@ -30,6 +30,7 @@ const AdminJobsTable = () => {
 
                     if (response.data?.data?.id) {
                         setCompanyId(response.data.data.id); // Set the company ID
+                        localStorage.setItem('companyId', response.data.data.id); // Save companyId in localStorage
                         fetchJobs(response.data.data.id); // Fetch jobs using the company ID
                     } else {
                         toast.error('Company not found.');
@@ -125,7 +126,15 @@ const AdminJobsTable = () => {
                                             <span>Edit</span>
                                         </div>
                                         <div
-                                            onClick={() => navigate(`/admin/jobs/${job.id}/applicants`)}
+                                            onClick={() => {
+                                                // Using companyId from localStorage for the CV link
+                                                const companyId = localStorage.getItem('companyId');
+                                                if (companyId) {
+                                                    navigate(`/admin/companies/${companyId}/applicants`);
+                                                } else {
+                                                    toast.error('Company ID is missing.');
+                                                }
+                                            }}
                                             className="flex items-center w-fit gap-2 cursor-pointer mt-2"
                                         >
                                             <Eye className="w-4" />

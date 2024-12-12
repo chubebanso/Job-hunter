@@ -1,20 +1,26 @@
 import React from 'react';
 import { Button } from '../ui/button';
 import { LogOut } from 'lucide-react'; // Import LogOut icon
-import { Link , useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner'; // Ensure toast is imported for notifications
 
-const NavbarAdmin = () => {
- const navigate = useNavigate(); 
-  const logoutHandler = async () => {
-        // Xóa sạch thông tin trong localStorage
+const NavbarHr = () => {
+    const navigate = useNavigate();
+
+    // Fetch companyId from localStorage
+    const companyId = localStorage.getItem('companyId');
+
+    const logoutHandler = async () => {
+        // Clear localStorage data
         localStorage.removeItem("accessToken");
         localStorage.removeItem("user");
         localStorage.removeItem("role");
+        localStorage.removeItem("companyId");
 
-        // Chuyển hướng về trang login
+        // Navigate to login page
         navigate("/login");
 
-        // Hiển thị thông báo thành công
+        // Show success notification
         toast.success("Log out successful");
     };
 
@@ -26,12 +32,18 @@ const NavbarAdmin = () => {
                 </div>
                 <div className='flex items-center gap-12'>
                     <ul className='flex font-medium items-center gap-5'>
-                        {/* Remove Home button and add Companies and Applicants */}
-                        <li><Link to="/admin/companies">Companies</Link></li>
-                        <li><Link to="/admin/companies/:id/applicants">Applicants</Link></li>
+                        {/* Jobs link */}
+                        <li><Link to="/admin/jobs">Jobs</Link></li>
+
+                        {/* CV link with dynamic companyId */}
+                        {companyId ? (
+                            <li><Link to={`/admin/companies/${companyId}/applicants`}>CV</Link></li>
+                        ) : (
+                            <li><span className="text-gray-400">CV (No Company ID)</span></li>
+                        )}
                     </ul>
 
-                    {/* Menu Items */}
+                    {/* Logout */}
                     <div className='flex flex-col my-2 text-gray-600'>
                         <div className='flex w-fit items-center gap-2 cursor-pointer mt-2'>
                             <LogOut size={18} />
@@ -44,4 +56,4 @@ const NavbarAdmin = () => {
     );
 };
 
-export default NavbarAdmin;
+export default NavbarHr;

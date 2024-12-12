@@ -7,6 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAllApplicants } from '@/redux/applicationSlice';
 import { Button } from '../ui/button';
+import NavbarAdmin from '../shared/NavbarAdmin';
 
 const Applicants = () => {
     const params = useParams();
@@ -27,9 +28,7 @@ const Applicants = () => {
     }, []);
     return (
         <div>
-            <Navbar />
-            <Button onClick={() => navigate("/admin/companies")}>Companies</Button>
-                 <Button onClick={() => navigate("/admin/jobs")}>Jobs</Button>
+            <NavbarAdmin />
             <div className='max-w-7xl mx-auto'>
                 <h1 className='font-bold text-xl my-5'>Applicants </h1>
                  <div className="flex justify-end mb-5">
