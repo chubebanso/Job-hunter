@@ -28,11 +28,14 @@ const Applicants = () => {
     return (
         <div>
             <Navbar />
+            <Button onClick={() => navigate("/admin/companies")}>Companies</Button>
+                 <Button onClick={() => navigate("/admin/jobs")}>Jobs</Button>
             <div className='max-w-7xl mx-auto'>
                 <h1 className='font-bold text-xl my-5'>Applicants </h1>
                  <div className="flex justify-end mb-5">
                  <Button onClick={() => navigate("/admin/applicants/create")}>New User</Button>
                 </div>
+
                 <ApplicantsTable />
             </div>
         </div>

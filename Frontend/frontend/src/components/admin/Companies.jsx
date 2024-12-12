@@ -20,6 +20,8 @@ const Companies = () => {
     return (
         <div>
             <Navbar />
+            <Button onClick={() => navigate("/admin/:id/applicants")}>Applicants</Button>
+            <Button onClick={() => navigate("/admin/jobs")}>Jobs</Button>
             <div className='max-w-6xl mx-auto my-10'>
                 <div className='flex items-center justify-between my-5'>
                     <Input

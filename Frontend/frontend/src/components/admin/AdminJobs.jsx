@@ -20,6 +20,8 @@ const AdminJobs = () => {
   return (
     <div>
       <Navbar />
+      <Button onClick={() => navigate("/admin/companies")}>Companies</Button>
+      <Button onClick={() => navigate("/admin/:id/applicants")}>Applicants</Button>
       <div className='max-w-6xl mx-auto my-10'>
         <div className='flex items-center justify-between my-5'>
           <Input
