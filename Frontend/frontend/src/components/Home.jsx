@@ -13,9 +13,9 @@ const Home = () => {
   // const { user } = useSelector(store => store.auth);
   // const navigate = useNavigate();
   // useEffect(() => {
-  //   if (user?.role === 'admin') {
+  //   if (role === 'admin') {
   //     navigate("/admin");
-  //   } else if (user?.role === 'HR') {
+  //   } else if (role === 'HR') {
   //     navigate("/admin/jobs");
   //   }
   // }, [user, navigate]);

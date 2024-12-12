@@ -10,6 +10,7 @@ import { JOB_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
 import { useNavigate } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
+import NavbarAdmin from '../shared/NavbarAdmin'
 
 const companyArray = [];
 
@@ -61,7 +62,7 @@ const PostJob = () => {
 
     return (
         <div>
-            <Navbar />
+            <NavbarAdmin />
             <div className='flex items-center justify-center w-screen my-5'>
                 <form onSubmit = {submitHandler} className='p-8 max-w-4xl border border-gray-200 shadow-lg rounded-md'>
                     <div className='grid grid-cols-2 gap-2'>
