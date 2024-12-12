@@ -26,8 +26,8 @@ public class UserService {
     final private RoleRepository roleRepository;
 
     public UserService(
-        UserRepository userRepository, 
-        RoleRepository roleRepository) {
+            UserRepository userRepository,
+            RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
     }
@@ -89,51 +89,39 @@ public class UserService {
         return this.userRepository.findByEmail(email);
     }
 
-    public void updateToken(String refreshToken, String email) {
-        User currentUser = this.userRepository.findByEmail(email);
-        if (currentUser != null) {
-            currentUser.setRefreshToken(refreshToken);
-            this.userRepository.save(currentUser);
-        }
-    }
-
-    public User getUserByRefreshTokenAndEmail(String email, String token) {
-        return this.userRepository.findByEmailAndRefreshToken(email, token);
-    }
-
-    public User applyUserToJob(User user, Job job){
+    public User applyUserToJob(User user, Job job) {
         user.getJobs().add(job);
         job.getApplicants().add(user);
         return this.userRepository.save(user);
     }
 
-    public User unapplyUserToJob(User user, Job job){
+    public User unapplyUserToJob(User user, Job job) {
         user.getJobs().remove(job);
         job.getApplicants().remove(user);
         return this.userRepository.save(user);
     }
 
     //////////////////////////////////////////////// 2024/12/11
-    
-    public User userAddAccepted(User user, Job job){
+
+    public User userAddAccepted(User user, Job job) {
         user.getAcceptedJobs().add(job);
         job.getAcceptedApplicants().add(user);
         return this.userRepository.save(user);
     }
 
-    public User userRemoveAccepted(User user, Job job){
+    public User userRemoveAccepted(User user, Job job) {
         user.getAcceptedJobs().remove(job);
         job.getAcceptedApplicants().remove(user);
         return this.userRepository.save(user);
     }
 
-    public User userAddRejected(User user, Job job){
+    public User userAddRejected(User user, Job job) {
         user.getRejectedJobs().add(job);
         job.getRejectedApplicants().add(user);
         return this.userRepository.save(user);
     }
 
-    public User userRemoveRejected(User user, Job job){
+    public User userRemoveRejected(User user, Job job) {
         user.getRejectedJobs().remove(job);
         job.getRejectedApplicants().remove(user);
         return this.userRepository.save(user);
@@ -141,13 +129,13 @@ public class UserService {
 
     ////////////////////////////////////////////////
 
-    public User addUserToCompany(User user, Company company){
+    public User addUserToCompany(User user, Company company) {
         user.setCompany(company);
         company.getUsers().add(user);
         return this.userRepository.save(user);
     }
 
-    public User removeUserFromCompany(User user, Company company){
+    public User removeUserFromCompany(User user, Company company) {
         user.setCompany(null);
         company.getUsers().remove(user);
         return this.userRepository.save(user);

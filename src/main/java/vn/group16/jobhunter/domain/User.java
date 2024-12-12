@@ -37,8 +37,6 @@ public class User {
     private Instant createdAt;
     private Instant updateAt;
     private long age;
-    @Column(columnDefinition = "MEDIUMTEXT")
-    private String refreshToken;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
@@ -130,14 +128,6 @@ public class User {
 
     public void setAge(long age) {
         this.age = age;
-    }
-
-    public String getRefreshToken() {
-        return refreshToken;
-    }
-
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
     }
 
     public long getId() {

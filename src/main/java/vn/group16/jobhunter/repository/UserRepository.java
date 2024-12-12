@@ -12,5 +12,4 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
     User findByEmail(String email);
 
-    User findByEmailAndRefreshToken(String email, String token);
 }
