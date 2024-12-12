@@ -35,19 +35,20 @@ public class ProfileController {
     final private UserService userService;
     final private SkillService skillService;
 
-    public ProfileController(ProfileService profileService, UserService userService, SkillService skillService){
+    public ProfileController(ProfileService profileService, UserService userService, SkillService skillService) {
         this.profileService = profileService;
         this.userService = userService;
         this.skillService = skillService;
     }
 
-    @PostMapping("profiles/create/{user_id}")
+    @PostMapping("/profiles/create/{user_id}")
     public ResponseEntity<?> createProfile(
-        @Valid @RequestBody Profile profile,
-        @PathVariable("user_id") long user_id) throws IdInvalidException{
+            @Valid @RequestBody Profile profile,
+            @PathVariable("user_id") long user_id) throws IdInvalidException {
         User findUser = this.userService.getUserById(user_id);
-        if (findUser == null) throw new IdInvalidException("Cannot find user.");
-        else{
+        if (findUser == null)
+            throw new IdInvalidException("Cannot find user.");
+        else {
             Profile newProfile = this.profileService.createProfile(profile, findUser);
             return ResponseEntity.status(HttpStatus.CREATED).body(newProfile);
         }
@@ -61,10 +62,12 @@ public class ProfileController {
 
     @GetMapping("/profiles/userID/{user_id}")
     public ResponseEntity<Profile> getProfileByUserId(@PathVariable("user_id") long user_id)
-    throws IdInvalidException{
+            throws IdInvalidException {
         User findUser = this.userService.getUserById(user_id);
-        if(findUser == null) throw new IdInvalidException("Cannot find user.");
-        else return ResponseEntity.ok(findUser.getProfile());
+        if (findUser == null)
+            throw new IdInvalidException("Cannot find user.");
+        else
+            return ResponseEntity.ok(findUser.getProfile());
     }
 
     @GetMapping("/profiles/all")
@@ -78,7 +81,8 @@ public class ProfileController {
     @APIMessage("fetch profiles with pagination")
     public ResponseEntity<ResultPaginationDTO> getAllProfilesPagination(Pageable pageable,
             @Filter Specification<Profile> spec) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.profileService.getAllProfilesPageResultPaginationDTO(spec, pageable));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(this.profileService.getAllProfilesPageResultPaginationDTO(spec, pageable));
     }
 
     @PutMapping("profiles/update")
@@ -93,11 +97,12 @@ public class ProfileController {
     }
 
     @DeleteMapping("profiles/delete/userID/{id}")
-    public ResponseEntity<String> deleteProfileByUserId(@PathVariable("id") Long id) 
-    throws IdInvalidException{
+    public ResponseEntity<String> deleteProfileByUserId(@PathVariable("id") Long id)
+            throws IdInvalidException {
         User findUser = this.userService.getUserById(id);
-        if (findUser == null) throw new IdInvalidException("Cannot find user.");
-        else{
+        if (findUser == null)
+            throw new IdInvalidException("Cannot find user.");
+        else {
             this.profileService.deleteProfile(findUser.getProfile().getId());
             return ResponseEntity.ok("Delete Job Success");
         }
@@ -105,8 +110,8 @@ public class ProfileController {
 
     @PutMapping("profiles/{profile_id}/skills/add/{skill_id}")
     public ResponseEntity<Profile> profileAddSkill(
-        @PathVariable("profile_id") long profile_id,
-        @PathVariable("skill_id") long skill_id){
+            @PathVariable("profile_id") long profile_id,
+            @PathVariable("skill_id") long skill_id) {
         Skill skill = this.skillService.getSkillById(skill_id);
         Profile profile = this.profileService.getProfileById(profile_id);
         return ResponseEntity.ok(this.profileService.addSkillToProfile(profile, skill));
@@ -114,8 +119,8 @@ public class ProfileController {
 
     @PutMapping("profiles/{profile_id}/skills/remove/{skill_id}")
     public ResponseEntity<Profile> profileRemoveSkill(
-        @PathVariable("profile_id") long profile_id,
-        @PathVariable("skill_id") long skill_id){
+            @PathVariable("profile_id") long profile_id,
+            @PathVariable("skill_id") long skill_id) {
         Skill skill = this.skillService.getSkillById(skill_id);
         Profile profile = this.profileService.getProfileById(profile_id);
         return ResponseEntity.ok(this.profileService.removeSkillToProfile(profile, skill));
