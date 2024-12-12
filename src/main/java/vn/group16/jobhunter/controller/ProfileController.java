@@ -126,11 +126,9 @@ public class ProfileController {
         return ResponseEntity.ok(this.profileService.removeSkillToProfile(profile, skill));
     }
 
-    //for testing
     @GetMapping("profiles/{profile_id}/skills/get")
     public ResponseEntity<List<Skill>> profileGetSkill(
-        @PathVariable("profile_id") long profile_id
-    ){
+            @PathVariable("profile_id") long profile_id) {
         Profile profile = this.profileService.getProfileById(profile_id);
         return ResponseEntity.ok(profile.getSkills());
     }
