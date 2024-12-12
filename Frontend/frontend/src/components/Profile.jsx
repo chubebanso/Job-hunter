@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './shared/Navbar';
 import { Avatar, AvatarImage } from './ui/avatar';
-import { Button } from './ui/button';
 import { Contact, Mail } from 'lucide-react';
 import { Badge } from './ui/badge';
-import AppliedJobTable from './AppliedJobTable';
-import UpdateProfileDialog from './UpdateProfileDialog';
 
 const Profile = () => {
-    const [open, setOpen] = useState(false);
     const [user, setUser] = useState(null);
     const [profile, setProfile] = useState(null);
     const [profileId, setProfileId] = useState(null);
     const [skillsList, setSkillsList] = useState([]); // All available skills
     const [selectedSkills, setSelectedSkills] = useState([]); // Selected skills
+    const [acceptedJobs, setAcceptedJobs] = useState([]); // List of accepted jobs
 
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -48,8 +45,55 @@ const Profile = () => {
                 .then((response) => response.json())
                 .then((data) => setSkillsList(data.data))
                 .catch((error) => console.error('Error fetching skills list:', error));
+
+            // Fetch accepted jobs
+            fetch(`http://localhost:8080/api/v1/users/${storedUser.id}/accepted-jobs`, {
+                method: 'GET',
+                headers: { Authorization: `Bearer ${accessToken}` },
+            })
+                .then((response) => response.json())
+                .then((data) => setAcceptedJobs(data))
+                .catch((error) => console.error('Error fetching accepted jobs:', error));
         }
     }, []);
+useEffect(() => {
+    const fetchAcceptedJobs = async () => {
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        const accessToken = localStorage.getItem('accessToken');
+
+        if (storedUser?.id && accessToken) {
+            try {
+                const response = await fetch(
+                    `http://localhost:8080/api/v1/users/${storedUser.id}/accepted-jobs`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch accepted jobs');
+                }
+
+                const data = await response.json();
+
+                // Lưu danh sách công việc được accepted từ `data.data`
+                if (Array.isArray(data.data)) {
+                    setAcceptedJobs(data.data);
+                } else {
+                    console.error('Unexpected data format:', data);
+                    setAcceptedJobs([]);
+                }
+            } catch (error) {
+                console.error('Error fetching accepted jobs:', error);
+            }
+        }
+    };
+
+    fetchAcceptedJobs();
+}, []);
 
     useEffect(() => {
         if (profileId) {
@@ -101,6 +145,42 @@ const Profile = () => {
                 .catch((error) => console.error('Error adding skill:', error));
         }
     };
+const handleAcceptJob = async (jobId) => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    const accessToken = localStorage.getItem('accessToken');
+
+    if (!storedUser?.id || !accessToken) {
+        alert('User is not authenticated.');
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            `http://localhost:8080/api/v1/users/${storedUser.id}/accept-job/${jobId}`,
+            {
+                method: 'PUT',
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Failed to accept the job.');
+        }
+
+        alert('Job has been accepted.');
+        // Cập nhật lại danh sách công việc sau khi nhận việc
+        setAcceptedJobs((prevJobs) =>
+            prevJobs.map((job) =>
+                job.id === jobId ? { ...job, status: 'accepted' } : { ...job, status: 'rejected' }
+            )
+        );
+    } catch (error) {
+        console.error('Error accepting job:', error);
+        alert('Failed to accept the job.');
+    }
+};
 
     return (
         <div>
@@ -198,14 +278,58 @@ const Profile = () => {
                 </div>
             </div>
 
-            {/* Applied Jobs */}
-            <div className='max-w-4xl mx-auto bg-white rounded-2xl'>
-                <h1 className='font-bold text-lg my-5'>Applied Jobs</h1>
-                <AppliedJobTable />
-            </div>
+           {/* Accepted Jobs */}
+<div className='max-w-4xl mx-auto bg-white rounded-2xl'>
+    <h1 className='font-bold text-lg my-5'>Accepted Jobs</h1>
+    {acceptedJobs.length > 0 ? (
+        <div className='p-4'>
+            {acceptedJobs.map((job) => (
+                <div
+                    key={job.id}
+                    className={`p-4 border rounded-lg mb-4 shadow ${
+                        job.status === 'accepted' ? 'bg-green-200' : 'bg-gray-100'
+                    }`}
+                >
+                    {/* Job Details */}
+                    <h2 className='font-bold text-lg'>{job.name || 'Job Title'}</h2>
+                    <p className='text-gray-700'>{job.description || 'No description provided'}</p>
+                    <p className='text-sm text-gray-500'>
+                        <strong>Location:</strong> {job.location || 'Not specified'}
+                    </p>
+                    <p className='text-sm text-gray-500'>
+                        <strong>Salary:</strong> {job.salary || 'Not specified'}
+                    </p>
 
-            {/* Update Profile Dialog */}
-            <UpdateProfileDialog open={open} setOpen={setOpen} />
+                    {/* Skills */}
+                    <div className='flex flex-wrap gap-2 mt-2'>
+                        {job.skills?.map((skill) => (
+                            <Badge
+                                key={skill.id}
+                                className='bg-green-200 text-green-800 px-2 py-1 rounded'
+                            >
+                                {skill.name}
+                            </Badge>
+                        ))}
+                    </div>
+
+                    {/* Button to Accept the Job */}
+                    <button
+                        onClick={() => handleAcceptJob(job.id)}
+                        className={`mt-4 px-4 py-2 rounded text-white ${
+                            job.status === 'accepted' ? 'bg-blue-500' : 'bg-green-500'
+                        }`}
+                    >
+                        {job.status === 'accepted' ? 'Accepted' : 'Accept Job'}
+                    </button>
+                </div>
+            ))}
+        </div>
+    ) : (
+        <p className='text-gray-500'>No jobs have been accepted yet.</p>
+    )}
+</div>
+
+
         </div>
     );
 };
