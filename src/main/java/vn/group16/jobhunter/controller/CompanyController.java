@@ -48,6 +48,12 @@ public class CompanyController {
         return ResponseEntity.ok(company);
     }
 
+    @GetMapping("/companies/name/{company_name}")
+    public ResponseEntity<Company> getCompanyByName(@PathVariable("company_name") String company_name){
+        Company company = this.companyService.getCompanyByName(company_name);
+        return ResponseEntity.ok(company);
+    }
+
     @GetMapping("/companies/all")
     @APIMessage("fetch all companies without pagination")
     public ResponseEntity<List<Company>> getAllCompanies() {
