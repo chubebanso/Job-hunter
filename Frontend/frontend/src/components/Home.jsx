@@ -9,16 +9,16 @@ import { useNavigate } from 'react-router-dom'
 import LatestCompanies from './LatestCompanies'
 
 const Home = () => {
-  useGetAllJobs();
-  const { user } = useSelector(store => store.auth);
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (user?.role === 'admin') {
-      navigate("/admin/companies");
-    } else if (user?.role === 'HR') {
-      navigate("/admin/jobs");
-    }
-  }, [user, navigate]);
+  // useGetAllJobs();
+  // const { user } = useSelector(store => store.auth);
+  // const navigate = useNavigate();
+  // useEffect(() => {
+  //   if (user?.role === 'admin') {
+  //     navigate("/admin");
+  //   } else if (user?.role === 'HR') {
+  //     navigate("/admin/jobs");
+  //   }
+  // }, [user, navigate]);
   return (
     <div>
       <Navbar />
