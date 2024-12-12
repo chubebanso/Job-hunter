@@ -71,6 +71,8 @@ public class JobService {
             currentJob.setJobType(job.getJobType());
             currentJob.setExperience(job.getExperience());
             currentJob.setPosition(job.getPosition());
+            if(currentJob.getPosition()==0) currentJob.setStatus("inactive");
+                else currentJob.setStatus("active");
             return this.jobRepository.save(currentJob);
         }
         return null;

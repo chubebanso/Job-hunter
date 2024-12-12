@@ -42,6 +42,9 @@ public class Job {
     private int experience;
     private int position;
 
+    private String status;
+
+
     private Instant createdAt;
     private Instant updatedAt;
 
@@ -207,6 +210,14 @@ public class Job {
 
     public void setSkills(List<Skill> skills) {
         this.skills = skills;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 }

@@ -47,6 +47,7 @@ public class JobController {
         if (company == null) throw new IdInvalidException("Cannot find company");
         else{
             Job newJob = this.jobService.createJobWithCompany(company, job);
+            newJob.setStatus("active");
             return ResponseEntity.status(HttpStatus.CREATED).body(newJob);
         }
     }
