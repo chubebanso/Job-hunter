@@ -1,14 +1,14 @@
 package vn.group16.jobhunter.service;
-
+ 
 import java.util.List;
 import java.util.Optional;
-
+ 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+ 
 import vn.group16.jobhunter.domain.Company;
 import vn.group16.jobhunter.domain.Job;
 import vn.group16.jobhunter.domain.Meta;
@@ -19,19 +19,19 @@ import vn.group16.jobhunter.dto.CreateUserDTO;
 import vn.group16.jobhunter.repository.JobRepository;
 import vn.group16.jobhunter.repository.RoleRepository;
 import vn.group16.jobhunter.repository.UserRepository;
-
+ 
 @Service
 public class UserService {
     final private UserRepository userRepository;
     final private RoleRepository roleRepository;
-
+ 
     public UserService(
             UserRepository userRepository,
             RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
     }
-
+ 
     public User handleCreateUser(CreateUserDTO postmanUser) {
         Role userRole = this.roleRepository.findByName(postmanUser.getRoleName());
         if (userRole != null) {
@@ -46,11 +46,11 @@ public class UserService {
         }
         return null;
     }
-
+ 
     public void handleDeteteUser(long id) {
         this.userRepository.deleteById(id);
     }
-
+ 
     public User getUserById(long id) {
         Optional<User> userOptional = this.userRepository.findById(id);
         if (userOptional.isPresent()) {
@@ -58,7 +58,7 @@ public class UserService {
         }
         return null;
     }
-
+ 
     public ResultPaginationDTO getAllUser(Specification<User> spec, Pageable pageable) {
         Page<User> pageUser = this.userRepository.findAll(pageable);
         ResultPaginationDTO res = new ResultPaginationDTO();
@@ -71,7 +71,7 @@ public class UserService {
         res.setResult(pageUser.getContent());
         return res;
     }
-
+ 
     public User handleUpdateUser(User user, long user_id) {
         Optional<User> userUpdate = this.userRepository.findById(user_id);
         if (userUpdate.isPresent()) {
@@ -84,57 +84,57 @@ public class UserService {
         }
         return null;
     }
-
+ 
     public User getUserByEmail(String email) {
         return this.userRepository.findByEmail(email);
     }
-
+ 
     public User applyUserToJob(User user, Job job) {
         user.getJobs().add(job);
         job.getApplicants().add(user);
         return this.userRepository.save(user);
     }
-
+ 
     public User unapplyUserToJob(User user, Job job) {
         user.getJobs().remove(job);
         job.getApplicants().remove(user);
         return this.userRepository.save(user);
     }
-
+ 
     //////////////////////////////////////////////// 2024/12/11
-
+ 
     public User userAddAccepted(User user, Job job) {
         user.getAcceptedJobs().add(job);
         job.getAcceptedApplicants().add(user);
         return this.userRepository.save(user);
     }
-
+ 
     public User userRemoveAccepted(User user, Job job) {
         user.getAcceptedJobs().remove(job);
         job.getAcceptedApplicants().remove(user);
         return this.userRepository.save(user);
     }
-
+ 
     public User userAddRejected(User user, Job job) {
         user.getRejectedJobs().add(job);
         job.getRejectedApplicants().add(user);
         return this.userRepository.save(user);
     }
-
+ 
     public User userRemoveRejected(User user, Job job) {
         user.getRejectedJobs().remove(job);
         job.getRejectedApplicants().remove(user);
         return this.userRepository.save(user);
     }
-
+ 
     ////////////////////////////////////////////////
-
+ 
     public User addUserToCompany(User user, Company company) {
         user.setCompany(company);
         company.getUsers().add(user);
         return this.userRepository.save(user);
     }
-
+ 
     public User removeUserFromCompany(User user, Company company) {
         user.setCompany(null);
         company.getUsers().remove(user);

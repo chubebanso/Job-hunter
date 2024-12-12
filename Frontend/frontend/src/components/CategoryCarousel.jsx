@@ -131,4 +131,6 @@ const CategoryCarousel = () => {
     );
 };
 
-export default CategoryCarousel;
+export default CategoryCarousel
+
+//những kĩ năng(selection) 
