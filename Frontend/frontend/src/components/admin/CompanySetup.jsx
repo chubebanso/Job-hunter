@@ -11,6 +11,7 @@ import { toast } from 'sonner'
 import { useSelector } from 'react-redux'
 import useGetCompanyById from '@/hooks/useGetCompanyById'
 import Footer from '../shared/Footer'
+import NavbarAdmin from '../shared/NavbarAdmin'
 
 const CompanySetup = () => {
     const params = useParams();
@@ -79,7 +80,7 @@ const CompanySetup = () => {
 
     return (
         <div>
-            <Navbar />
+            <NavbarAdmin />
             <div className='max-w-xl mx-auto my-10'>
                 <form onSubmit={submitHandler}>
                     <div className='flex items-center gap-5 p-8'>

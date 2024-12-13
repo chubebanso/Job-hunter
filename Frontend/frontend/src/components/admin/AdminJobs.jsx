@@ -8,6 +8,7 @@ import AdminJobsTable from './AdminJobsTable'
 import useGetAllAdminJobs from '@/hooks/useGetAllAdminJobs'
 import { setSearchJobByText } from '@/redux/jobSlice'
 import NavbarAdmin from '../shared/NavbarAdmin'
+import NavbarHr from '../shared/NavBarHr'
 
 const AdminJobs = () => {
   useGetAllAdminJobs();
@@ -20,7 +21,7 @@ const AdminJobs = () => {
   }, [input]);
   return (
     <div>
-      <NavbarAdmin/>
+      <NavbarHr/>
       <div className='max-w-6xl mx-auto my-10'>
         <div className='flex items-center justify-between my-5'>
           <Input

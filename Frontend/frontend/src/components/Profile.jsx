@@ -3,6 +3,7 @@ import Navbar from './shared/Navbar';
 import { Avatar, AvatarImage } from './ui/avatar';
 import { Contact, Mail } from 'lucide-react';
 import { Badge } from './ui/badge';
+import { Button } from './ui/button';
 
 const Profile = () => {
     const [user, setUser] = useState(null);
@@ -11,6 +12,7 @@ const Profile = () => {
     const [skillsList, setSkillsList] = useState([]); // All available skills
     const [selectedSkills, setSelectedSkills] = useState([]); // Selected skills
     const [acceptedJobs, setAcceptedJobs] = useState([]); // List of accepted jobs
+    const [profileForm, setProfileForm] = useState({ bio: '', phoneNumber: '', dateOfBirth: '' }); // Profile form data
 
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -30,12 +32,18 @@ const Profile = () => {
                 method: 'GET',
                 headers: { Authorization: `Bearer ${accessToken}` },
             })
-                .then((response) => response.json())
+                .then((response) => {
+                    if (!response.ok) throw new Error('Profile not found');
+                    return response.json();
+                })
                 .then((data) => {
                     setProfile(data.data);
                     setProfileId(data.data.id); // Save profileId
+                    localStorage.setItem('profileId', data.data.id); // Save profileId in localStorage
                 })
-                .catch((error) => console.error('Error fetching profile data:', error));
+                .catch(() => {
+                    setProfile(null); // No profile found
+                });
 
             // Fetch all skills
             fetch(`http://localhost:8080/api/v1/all/skills`, {
@@ -52,135 +60,140 @@ const Profile = () => {
                 headers: { Authorization: `Bearer ${accessToken}` },
             })
                 .then((response) => response.json())
-                .then((data) => setAcceptedJobs(data))
+                .then((data) => setAcceptedJobs(data.data || []))
                 .catch((error) => console.error('Error fetching accepted jobs:', error));
         }
     }, []);
-useEffect(() => {
-    const fetchAcceptedJobs = async () => {
+
+    const handleCreateProfile = async () => {
         const storedUser = JSON.parse(localStorage.getItem('user'));
         const accessToken = localStorage.getItem('accessToken');
 
-        if (storedUser?.id && accessToken) {
-            try {
-                const response = await fetch(
-                    `http://localhost:8080/api/v1/users/${storedUser.id}/accepted-jobs`,
-                    {
-                        method: 'GET',
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`,
-                        },
-                    }
-                );
+        if (!storedUser?.id || !accessToken) {
+            alert('User is not authenticated.');
+            return;
+        }
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch accepted jobs');
-                }
+        try {
+            const response = await fetch(`http://localhost:8080/api/v1/profiles/create/${storedUser.id}`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    bio: profileForm.bio,
+                    phoneNumber: profileForm.phoneNumber,
+                    dateOfBirth: profileForm.dateOfBirth,
+                }),
+            });
 
-                const data = await response.json();
+            if (!response.ok) throw new Error('Failed to create profile');
 
-                // Lưu danh sách công việc được accepted từ `data.data`
-                if (Array.isArray(data.data)) {
-                    setAcceptedJobs(data.data);
-                } else {
-                    console.error('Unexpected data format:', data);
-                    setAcceptedJobs([]);
-                }
-            } catch (error) {
-                console.error('Error fetching accepted jobs:', error);
-            }
+            const data = await response.json();
+            setProfile(data.data); // Set the created profile
+            setProfileId(data.data.id); // Set profile ID
+            localStorage.setItem('profileId', data.data.id); // Save profileId in localStorage
+            alert('Profile created successfully.');
+        } catch (error) {
+            console.error('Error creating profile:', error);
+            alert('Failed to create profile.');
         }
     };
 
-    fetchAcceptedJobs();
-}, []);
-
-    useEffect(() => {
-        if (profileId) {
-            const accessToken = localStorage.getItem('accessToken');
-            // Fetch selected skills for the profile
-            fetch(`http://localhost:8080/api/v1/profiles/${profileId}/skills/get`, {
-                method: 'GET',
-                headers: { Authorization: `Bearer ${accessToken}` },
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.data) {
-                        const selectedSkillIds = data.data.map((skill) => skill.id); // Extract skill IDs
-                        setSelectedSkills(selectedSkillIds); // Set selected skills
-                    }
-                })
-                .catch((error) => console.error('Error fetching selected skills:', error));
-        }
-    }, [profileId]);
-
-    const handleSkillToggle = (skillId) => {
-        const accessToken = localStorage.getItem('accessToken');
-        const isSkillSelected = selectedSkills.includes(skillId);
-
-        if (isSkillSelected) {
-            // Call API to remove skill
-            fetch(`http://localhost:8080/api/v1/profiles/${profileId}/skills/remove/${skillId}`, {
-                method: 'PUT',
-                headers: { Authorization: `Bearer ${accessToken}` },
-            })
-                .then((response) => {
-                    if (!response.ok) throw new Error('Failed to remove skill');
-                    setSelectedSkills((prevSkills) => prevSkills.filter((id) => id !== skillId));
-                })
-                .catch((error) => console.error('Error removing skill:', error));
-        } else {
-            // Call API to add skill
-            fetch(`http://localhost:8080/api/v1/profiles/${profileId}/skills/add/${skillId}`, {
-                method: 'PUT',
-                headers: { Authorization: `Bearer ${accessToken}` },
-            })
-                .then((response) => {
-                    if (!response.ok) throw new Error('Failed to add skill');
-                    return response.json();
-                })
-                .then(() => {
-                    setSelectedSkills((prevSkills) => [...prevSkills, skillId]);
-                })
-                .catch((error) => console.error('Error adding skill:', error));
-        }
-    };
-const handleAcceptJob = async (jobId) => {
-    const storedUser = JSON.parse(localStorage.getItem('user'));
+ const handleSkillToggle = async (skillId) => {
     const accessToken = localStorage.getItem('accessToken');
+    const isSkillSelected = selectedSkills.includes(skillId);
 
-    if (!storedUser?.id || !accessToken) {
-        alert('User is not authenticated.');
+    if (!profileId) {
+        alert('Profile not found. Please create a profile first.');
         return;
     }
 
     try {
-        const response = await fetch(
-            `http://localhost:8080/api/v1/users/${storedUser.id}/accept-job/${jobId}`,
-            {
-                method: 'PUT',
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
+        if (isSkillSelected) {
+            // Call API to remove skill
+            const response = await fetch(
+                `http://localhost:8080/api/v1/profiles/${profileId}/skills/remove/${skillId}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed to remove skill');
             }
-        );
 
-        if (!response.ok) {
-            throw new Error('Failed to accept the job.');
+            // Update the selected skills list
+            setSelectedSkills((prevSkills) => prevSkills.filter((id) => id !== skillId));
+            alert('Skill removed successfully.');
+        } else {
+            // Call API to add skill
+            const response = await fetch(
+                `http://localhost:8080/api/v1/profiles/${profileId}/skills/add/${skillId}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed to add skill');
+            }
+
+            // Update the selected skills list
+            setSelectedSkills((prevSkills) => [...prevSkills, skillId]);
+            alert('Skill added successfully.');
         }
-
-        alert('Job has been accepted.');
-        // Cập nhật lại danh sách công việc sau khi nhận việc
-        setAcceptedJobs((prevJobs) =>
-            prevJobs.map((job) =>
-                job.id === jobId ? { ...job, status: 'accepted' } : { ...job, status: 'rejected' }
-            )
-        );
     } catch (error) {
-        console.error('Error accepting job:', error);
-        alert('Failed to accept the job.');
+        console.error('Error toggling skill:', error);
+        alert('Failed to update skills. Please try again.');
     }
 };
+useEffect(() => {
+    const fetchUserSkills = async () => {
+        const accessToken = localStorage.getItem('accessToken');
+
+        if (!profileId || !accessToken) {
+            console.error('Profile ID or access token missing.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/v1/profiles/${profileId}/skills/get`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch user skills');
+            }
+
+            const data = await response.json();
+            if (data?.data) {
+                const userSkillIds = data.data.map((skill) => skill.id); // Extract skill IDs
+                setSelectedSkills(userSkillIds); // Set selected skills
+            }
+        } catch (error) {
+            console.error('Error fetching user skills:', error);
+        }
+    };
+
+    if (profileId) {
+        fetchUserSkills(); // Fetch user skills when profileId is available
+    }
+}, [profileId]);
+
 
     return (
         <div>
@@ -241,95 +254,105 @@ const handleAcceptJob = async (jobId) => {
                         </>
                     ) : (
                         <div>
-                            <span>No profile information available.</span>
+                            <h2 className='font-bold text-lg mb-3'>Create Profile</h2>
+                            <div className='my-4'>
+                                <label>Bio</label>
+                                <input
+                                    type='text'
+                                    value={profileForm.bio}
+                                    onChange={(e) =>
+                                        setProfileForm({ ...profileForm, bio: e.target.value })
+                                    }
+                                    className='border p-2 w-full'
+                                />
+                            </div>
+                            <div className='my-4'>
+                                <label>Phone Number</label>
+                                <input
+                                    type='text'
+                                    value={profileForm.phoneNumber}
+                                    onChange={(e) =>
+                                        setProfileForm({ ...profileForm, phoneNumber: e.target.value })
+                                    }
+                                    className='border p-2 w-full'
+                                />
+                            </div>
+                            <div className='my-4'>
+                                <label>Date of Birth</label>
+                                <input
+                                    type='date'
+                                    value={profileForm.dateOfBirth}
+                                    onChange={(e) =>
+                                        setProfileForm({ ...profileForm, dateOfBirth: e.target.value })
+                                    }
+                                    className='border p-2 w-full'
+                                />
+                            </div>
+                            <Button onClick={handleCreateProfile}>Create Profile</Button>
                         </div>
                     )}
                 </div>
 
-                {/* Skills */}
-                <div className='my-5'>
-                    <h1>Skills</h1>
-                    <div className='flex flex-wrap gap-2'>
-                        {skillsList.map((skill) => (
-                            <button
-                                key={skill.id}
-                                type='button'
-                                className={`px-3 py-1 border rounded ${
-                                    selectedSkills.includes(skill.id)
-                                        ? 'bg-blue-500 text-white'
-                                        : 'bg-gray-200'
-                                }`}
-                                onClick={() => handleSkillToggle(skill.id)}
-                            >
-                                {skill.name}
-                            </button>
-                        ))}
-                    </div>
-                    <div className='flex items-center gap-1 mt-3'>
-                        {selectedSkills.length > 0 ? (
-                            selectedSkills.map((id) => {
-                                const skill = skillsList.find((s) => s.id === id);
-                                return skill ? <Badge key={id}>{skill.name}</Badge> : null;
-                            })
-                        ) : (
-                            <span>No skills selected</span>
-                        )}
-                    </div>
-                </div>
-            </div>
-
-           {/* Accepted Jobs */}
-<div className='max-w-4xl mx-auto bg-white rounded-2xl'>
-    <h1 className='font-bold text-lg my-5'>Accepted Jobs</h1>
-    {acceptedJobs.length > 0 ? (
-        <div className='p-4'>
-            {acceptedJobs.map((job) => (
-                <div
-                    key={job.id}
-                    className={`p-4 border rounded-lg mb-4 shadow ${
-                        job.status === 'accepted' ? 'bg-green-200' : 'bg-gray-100'
-                    }`}
-                >
-                    {/* Job Details */}
-                    <h2 className='font-bold text-lg'>{job.name || 'Job Title'}</h2>
-                    <p className='text-gray-700'>{job.description || 'No description provided'}</p>
-                    <p className='text-sm text-gray-500'>
-                        <strong>Location:</strong> {job.location || 'Not specified'}
-                    </p>
-                    <p className='text-sm text-gray-500'>
-                        <strong>Salary:</strong> {job.salary || 'Not specified'}
-                    </p>
-
-                    {/* Skills */}
-                    <div className='flex flex-wrap gap-2 mt-2'>
-                        {job.skills?.map((skill) => (
-                            <Badge
-                                key={skill.id}
-                                className='bg-green-200 text-green-800 px-2 py-1 rounded'
-                            >
-                                {skill.name}
-                            </Badge>
-                        ))}
-                    </div>
-
-                    {/* Button to Accept the Job */}
-                    <button
-                        onClick={() => handleAcceptJob(job.id)}
-                        className={`mt-4 px-4 py-2 rounded text-white ${
-                            job.status === 'accepted' ? 'bg-blue-500' : 'bg-green-500'
-                        }`}
-                    >
-                        {job.status === 'accepted' ? 'Accepted' : 'Accept Job'}
-                    </button>
-                </div>
-            ))}
-        </div>
-    ) : (
-        <p className='text-gray-500'>No jobs have been accepted yet.</p>
-    )}
+         <div className='my-5'>
+    <h1>Skills</h1>
+    <div className='flex flex-wrap gap-2'>
+        {skillsList.map((skill) => (
+            <button
+                key={skill.id}
+                type='button'
+                className={`px-3 py-1 border rounded ${
+                    selectedSkills.includes(skill.id)
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-200'
+                }`}
+                onClick={() => handleSkillToggle(skill.id)}
+            >
+                {skill.name}
+            </button>
+        ))}
+    </div>
+    <div className='flex items-center gap-1 mt-3'>
+        {selectedSkills.length > 0 ? (
+            selectedSkills.map((id) => {
+                const skill = skillsList.find((s) => s.id === id);
+                return skill ? <Badge key={id}>{skill.name}</Badge> : null;
+            })
+        ) : (
+            <span>No skills selected</span>
+        )}
+    </div>
 </div>
 
 
+            </div>
+
+           {/* Accepted Jobs */}
+            <div className='max-w-4xl mx-auto bg-white rounded-2xl'>
+                <h1 className='font-bold text-lg my-5'>Accepted Jobs</h1>
+                {acceptedJobs.length > 0 ? (
+                    <div className='p-4'>
+                        {acceptedJobs.map((job) => (
+                            <div
+                                key={job.id}
+                                className={`p-4 border rounded-lg mb-4 shadow ${
+                                    job.status === 'accepted' ? 'bg-green-200' : 'bg-gray-100'
+                                }`}
+                            >
+                                <h2 className='font-bold text-lg'>{job.name || 'Job Title'}</h2>
+                                <p className='text-gray-700'>{job.description || 'No description provided'}</p>
+                                <p className='text-sm text-gray-500'>
+                                    <strong>Location:</strong> {job.location || 'Not specified'}
+                                </p>
+                                <p className='text-sm text-gray-500'>
+                                    <strong>Salary:</strong> {job.salary || 'Not specified'}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p className='text-gray-500'>No jobs have been accepted yet.</p>
+                )}
+            </div>
         </div>
     );
 };
